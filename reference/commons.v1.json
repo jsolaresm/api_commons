@@ -1,0 +1,122 @@
+{
+  "openapi": "3.0.0",
+  "x-stoplight": {
+    "id": "puwu6zdf87ck9"
+  },
+  "info": {
+    "title": "commons.v1",
+    "version": "1.0",
+    "description": "Api para el manejo de data comun entre ecosistemas"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/commons/catalog": {
+      "get": {
+        "summary": "Consulta listado de catalogos generales",
+        "tags": [],
+        "responses": {},
+        "operationId": "get-commons-catalog"
+      }
+    },
+    "/commons/catalog/{catalogCode}/detail": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "catalogCode",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Lista detalle de catalogo",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./baseResponse.v1.json"
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": {
+                      "message": "TRANSACTION_SUCCESS",
+                      "code": "200",
+                      "data": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-detail-catalog-http",
+        "security": [
+          {
+            "AuthorizationChannels": []
+          }
+        ],
+        "description": "Consulta de detalle de catalogo por codigo",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "#/components/parameters/Channel"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "AuthorizationChannels": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "x-api-key": {
+        "name": "API Key",
+        "type": "apiKey",
+        "in": "header",
+        "description": ""
+      }
+    },
+    "parameters": {
+      "Authorization": {
+        "name": "Authorization",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "Identifier": {
+        "name": "Identifier",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "Channel": {
+        "name": "Channel",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

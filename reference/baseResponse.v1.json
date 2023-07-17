@@ -1,0 +1,34 @@
+{
+  "title": "baseResponse.v1",
+  "x-stoplight": {
+    "id": "5faixz3sfrjwr"
+  },
+  "type": "object",
+  "description": "Respuesta exitosa",
+  "properties": {
+    "message": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "2dx7ti4h08nye"
+      },
+      "example": "TRANSACTION_SUCCESS"
+    },
+    "code": {
+      "type": "string",
+      "x-stoplight": {
+        "id": "6s5b3wy5upyiy"
+      },
+      "example": "200"
+    },
+    "data": {
+      "type": "object",
+      "x-stoplight": {
+        "id": "dt4eedgh44tq7"
+      }
+    }
+  },
+  "required": [
+    "message",
+    "code"
+  ]
+}
