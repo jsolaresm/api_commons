@@ -59,7 +59,7 @@
                 "schema": {
                   "allOf": [
                     {
-                      "$ref": "../Base-Response.v1.json"
+                      "$ref": "../Models/Base-Response.v1.json"
                     },
                     {
                       "type": "object",
@@ -305,7 +305,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "../Base-Error.v1.json"
+              "$ref": "../Models/Base-Error.v1.json"
             },
             "examples": {
               "uncontrollerErrorRsExample": {
@@ -323,7 +323,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "../Base-Error.v1.json"
+              "$ref": "../Models/Base-Error.v1.json"
             },
             "examples": {
               "MethodNotAllowedRsExample": {
@@ -341,7 +341,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "../Base-Error.v1.json"
+              "$ref": "../Models/Base-Error.v1.json"
             },
             "examples": {
               "ServicesUnavailableRsExample": {
@@ -359,7 +359,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "../Base-Error.v1.json"
+              "$ref": "../Models/Base-Error.v1.json"
             },
             "examples": {
               "UnauthorizedRsExample": {
@@ -377,7 +377,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "../Base-Error.v1.json"
+              "$ref": "../Models/Base-Error.v1.json"
             },
             "examples": {
               "InsuficientFoundsRsExample": {
@@ -395,7 +395,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "../Base-Error.v1.json"
+              "$ref": "../Models/Base-Error.v1.json"
             },
             "examples": {
               "ResourceNotFoundRsExample": {
@@ -425,7 +425,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "../Base-Error.v1.json"
+              "$ref": "../Models/Base-Error.v1.json"
             },
             "examples": {
               "NotAcceptableRsExample": {
@@ -443,7 +443,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "../Base-Error.v1.json"
+              "$ref": "../Models/Base-Error.v1.json"
             },
             "examples": {
               "ProccessingErrorRsExample": {
@@ -461,7 +461,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "../Base-Error.v1.json"
+              "$ref": "../Models/Base-Error.v1.json"
             },
             "examples": {
               "AccountIsLockedRsExample": {
@@ -491,7 +491,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "../Base-Error.v1.json"
+              "$ref": "../Models/Base-Error.v1.json"
             },
             "examples": {
               "BadRequestRsExample": {
