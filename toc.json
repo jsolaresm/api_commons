@@ -1,14 +1,84 @@
 {
-  "collapseTableOfContents": false,
   "items": [
+    {
+      "type": "item",
+      "title": "Authenticar las Apis",
+      "uri": "docs/Authentication.md"
+    },
     {
       "type": "divider",
       "title": "APIS"
     },
     {
       "type": "item",
-      "title": "commons",
-      "uri": "/reference/commons.v1.json"
+      "title": "Security",
+      "uri": "reference/security.v1.json"
+    },
+    {
+      "type": "item",
+      "title": "Customers",
+      "uri": "reference/customers.v1.json"
+    },
+    {
+      "type": "item",
+      "title": "DemandDeposits",
+      "uri": "reference/demandDeposits.v1.json"
+    },
+    {
+      "type": "item",
+      "title": "TermDeposits",
+      "uri": "reference/termDeposits.v1.json"
+    },
+    {
+      "type": "item",
+      "title": "DebitCards",
+      "uri": "reference/debitCards.v1.json"
+    },
+    {
+      "type": "item",
+      "title": "Loans",
+      "uri": "reference/loans.v1.json"
+    },
+    {
+      "type": "item",
+      "title": "CreditCards",
+      "uri": "reference/creditCards.v1.json"
+    },
+    {
+      "type": "item",
+      "title": "FinancialServices",
+      "uri": "reference/financialServices.v1.json"
+    },
+    {
+      "type": "item",
+      "title": "Comunes",
+      "uri": "reference/commons.v1.json"
+    },
+    {
+      "type": "item",
+      "title": "Payments",
+      "uri": "reference/payments.v1.json"
+    },
+    {
+      "type": "item",
+      "title": "Collections",
+      "uri": "reference/collections.v1.json"
+    },
+    {
+      "type": "group",
+      "title": "BRIDGES",
+      "items": [
+        {
+          "type": "item",
+          "title": "ACH - Authorize",
+          "uri": "docs/fn/ach-bridge/authorize.md"
+        },
+        {
+          "type": "item",
+          "title": "ACH - BAM Account Validation",
+          "uri": "docs/fn/ach-bridge/acount-validation.md"
+        }
+      ]
     }
   ]
 }
