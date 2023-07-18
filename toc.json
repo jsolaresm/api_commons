@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "type": "item",
+      "title": "Authenticar las Apis",
+      "uri": "docs/Authentication.md"
+    },
+    {
+      "type": "divider",
+      "title": "APIS"
+    },
+    
+    {
+      "type": "item",
+      "title": "Comunes",
+      "uri": "reference/comunes.v1.json"
+    }
+  ]
+}
