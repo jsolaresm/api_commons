@@ -1,0 +1,2752 @@
+{
+  "openapi": "3.0.0",
+  "x-stoplight": {
+    "id": "gdlodxeseag6n"
+  },
+  "info": {
+    "title": "debitCards",
+    "version": "1.0",
+    "description": "API para la consulta, gestión y validación de Tarjetas de Debito.",
+    "contact": {
+      "name": "Rony Reyes",
+      "email": "rony.reyes@bam.com.gt"
+    },
+    "license": {
+      "name": "Banco Agromercantil de Guatemala, S.A."
+    },
+    "x-tags": {
+      "bam:application-id": "rdct_api_composicion",
+      "bam:component": "servicios-core",
+      "bam:layer": "composicion",
+      "bam:tecnical-domain": "DebitCards",
+      "bam:sox-compliance": "si",
+      "bam:billing-mode": "transversal",
+      "bam:cost-center": "0",
+      "bam:cost-center-project": "334",
+      "bam:impact": "BIA",
+      "bam:creator-user": "Rony Reyes - rony.reyes",
+      "bam:creator-email": "rony.reyes@bam.com.gt"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://h6sryw4kl1.execute-api.us-east-1.amazonaws.com/prod/v1",
+      "description": "ComponentesCompartidosDev"
+    }
+  ],
+  "paths": {
+    "/debitCards/verifyPIN": {
+      "parameters": [],
+      "post": {
+        "summary": "Valida PIN TD",
+        "operationId": "verify-pin-http",
+        "x-integration-type": "CONTAINER",
+        "responses": {
+          "200": {
+            "description": "Validacion de pin exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "response": {
+                              "type": "object",
+                              "properties": {
+                                "pinValid": {
+                                  "type": "boolean",
+                                  "description": "indica si el PIN es valido"
+                                }
+                              },
+                              "required": [
+                                "pinValid"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "ValidaPinRsExample": {
+                    "value": {
+                      "code": "OPERATION_SUCCESSFUL",
+                      "message": "Operación exitosa",
+                      "data": {
+                        "pinValid": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Numero de tarjeta no encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "DebitCardNotFound": {
+                    "value": {
+                      "code": "DEBIT_CARD_NOT_FOUND",
+                      "message": "No se encontró la tarjeta asignada al cliente"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Pin invalido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "PinInvalidRsExample": {
+                    "value": {
+                      "code": "PIN_INVALID",
+                      "message": "Numero de pin no valido"
+                    }
+                  },
+                  "StatusInvalidRsExample": {
+                    "value": {
+                      "code": "STATUS_INVALID",
+                      "message": "Estado de producto invalido"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "423": {
+            "description": "Tarjeta bloqueada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "DebitCardLockedRsExample": {
+                    "value": {
+                      "code": "PIN_LOCKED",
+                      "message": "Tarjeta bloqueada por multiples intentos de validación de PIN"
+                    }
+                  },
+                  "CardLockedRsExample": {
+                    "value": {
+                      "code": "CARD_LOCKED",
+                      "message": "Tarjeta bloqueada"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Intento maximo de validacion alcanzado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "TooManyPinInvalidRsExample": {
+                    "value": {
+                      "code": "TO_MANY_PIN_INVALID",
+                      "message": "Alcanzo el numero maximo de intentos de validacion de PIN"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "description": "Verificación o validacion del PIN contra el switch de 5B",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idCobis": {
+                    "$ref": "../Models/Customer/idCobis.v1.yaml"
+                  },
+                  "cardNumber": {
+                    "$ref": "../Models/DebitCard/CardNumber.v1.yaml"
+                  },
+                  "pinNumber": {
+                    "$ref": "../Models/DebitCard/PinNumber.v1.yaml"
+                  }
+                },
+                "required": [
+                  "idCobis",
+                  "cardNumber",
+                  "pinNumber"
+                ]
+              },
+              "examples": {
+                "BodyRsExample": {
+                  "value": {
+                    "idCobis": 765467,
+                    "cardNumber": "6754",
+                    "pinNumber": "LS0tLS1CRUdJTiBQR1AgTUVTU0FHRS0tLS0tDQpWZXJzaW9uOiBPcGVuUEdQLmpzIHY0LjEwLjEwDQpDb21tZW50OiBodHRwczovL29wZW5wZ3Bqcy5vcmcNCg0Kd2NBQ0EvOWVmeldxZ1JqSUVnUWpCQUROVS9wZnZoUVQydlVTVFdFZG1XL2IwWE5pVGF3NVZleGx2b0VRDQpwQUIzU1B5T3I0V25PZVFkTW1HYURWcDE1Z3pYNzNKRDR6U2RRMitVejQrL0x3MnNPd0JEWWdVMHZWK3ANCm1MYk1DQUtXenpIWDE3Znp2U3pmUWhicUYzWXE3K1Q5QXlrekk0QXFjNHlTMDZCSkVwZnJwMnZNT0IvYw0KN0toZGtJakJlSmNKWnZzNXNEQk12aGJVUlZQUWNRWkpXeXNoUjNNVkhlWHB0RTlYUDlxQmZWSGpSdlpvDQpyQlpDWGZ3a25maE43Y1pzVlFNU2hLVFNQZ0VqMzlDVDBYMHZGU0xqUlkzRHpLaXBTdytxemhZbmRUSWUNCkNUUWk0QWdXckxNYWhTbEdrUk81S0NreEdWeWk1UHFHVHc4NzhzNkhYUVArOXUxVw0KPUo1UzANCi0tLS0tRU5EIFBHUCBNRVNTQUdFLS0tLS0NCg=="
+                  }
+                }
+              }
+            }
+          },
+          "description": "Validacion del PIN de tarjeta de debito en base a numero de tarjeta y pin encriptado con el componente de seguridad central."
+        },
+        "tags": [
+          "Consulta",
+          "Tarjeta-Debito",
+          "Valida-PIN"
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          }
+        ]
+      }
+    },
+    "/debitCards/mobileCash": {
+      "get": {
+        "summary": "Efectivo Móvil enviados",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "properties": {
+                                "mobileCash": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "operationId": {
+                                        "$ref": "../Models/Transactions/TransactionId.yaml"
+                                      },
+                                      "accountType": {
+                                        "$ref": "../Models/Products/AccountTypeCode.yaml"
+                                      },
+                                      "accountNumber": {
+                                        "$ref": "../Models/Products/AccountNumber.v1.yaml"
+                                      },
+                                      "currency": {
+                                        "$ref": "../Models/Products/Currency.v1.yaml"
+                                      },
+                                      "amount": {
+                                        "$ref": "../Models/CreditCard/Amount.v1.yaml"
+                                      },
+                                      "beneficiaryPhone": {
+                                        "$ref": "../Models/Customer/CellPhone.yaml"
+                                      },
+                                      "beneficiaryName": {
+                                        "$ref": "../Models/Transactions/BeneficiaryName.yaml"
+                                      },
+                                      "status": {
+                                        "$ref": "../Models/Operation/OperationStatus.yaml"
+                                      },
+                                      "paymentDate": {
+                                        "$ref": "../Models/Operation/PaymentDate.yaml"
+                                      },
+                                      "cancellationDate": {
+                                        "$ref": "../Models/Operation/CancellationDate.yaml"
+                                      },
+                                      "creationDate": {
+                                        "$ref": "../Models/Operation/CreationDate.v1.yaml"
+                                      },
+                                      "creationTime": {
+                                        "$ref": "../Models/Transactions/TransactionTime.v1.yaml"
+                                      },
+                                      "paymentTime": {
+                                        "$ref": "../Models/Transactions/TransactionTime.v1.yaml"
+                                      },
+                                      "cancellationTime": {
+                                        "$ref": "../Models/Transactions/TransactionTime.v1.yaml"
+                                      },
+                                      "referenceNumber": {
+                                        "$ref": "../Models/Transactions/ReferenceNumber.v1.yaml"
+                                      }
+                                    }
+                                  }
+                                },
+                                "totalResults": {
+                                  "$ref": "../Models/Pagination/TotalResults.v1.yaml"
+                                },
+                                "prevLimit": {
+                                  "$ref": "../Models/Pagination/PrevLimit.v1.yaml"
+                                },
+                                "prevOffset": {
+                                  "$ref": "../Models/Pagination/PrevOffset.v1.yaml"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "mobileCashGetRsExample": {
+                    "value": {
+                      "code": "string",
+                      "message": "string",
+                      "data": {
+                        "result": {
+                          "mobileCash": [
+                            {
+                              "operationId": 12345,
+                              "accountType": 4,
+                              "accountNumber": "3645770022",
+                              "currency": {
+                                "code": 0,
+                                "description": "QUETZAL"
+                              },
+                              "amount": 125.5,
+                              "beneficiaryPhone": "58526545",
+                              "beneficiaryName": "JUAN LUIS GONZALEZ LOPEZ",
+                              "status": "INGRESADA",
+                              "paymentDate": "2021-01-01",
+                              "cancellationDate": "2021-01-01",
+                              "creationDate": "2021-01-01",
+                              "creationTime": "13:57:29.688Z",
+                              "paymentTime": "13:57:29.688Z",
+                              "cancellationTime": "13:57:29.688Z",
+                              "referenceNumber": "1064052816512"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "MovementsNotFound": {
+                    "value": {
+                      "code": "MOVEMENTS_NOT_FOUND",
+                      "message": "No se encontraron movimientos"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/Method-Not-Allowed"
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "operationId": "mobile-cash-get-http",
+        "description": "Obtener registros historicos y detalles de cada efectivo móvil realizado con los filtros indicados",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Channel"
+          },
+          {
+            "$ref": "./demandDeposits.v1.json#/components/parameters/InitDate"
+          },
+          {
+            "$ref": "./demandDeposits.v1.json#/components/parameters/EndDate"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "I",
+                "A",
+                "P",
+                "C"
+              ],
+              "example": "I",
+              "minLength": 1,
+              "maxLength": 1
+            },
+            "in": "query",
+            "name": "status",
+            "description": "Estado del envío de efectivo móvil, si no se ingresa el estado se consultaran todos (I - Ingresado, P - Pagado, C - Vencido, A - Anulado)."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "CUSTOMER",
+                "USER",
+                "ACCOUNT"
+              ],
+              "example": "CUSTOMER"
+            },
+            "in": "query",
+            "name": "queryType",
+            "description": "Tipo de filtro a aplicar",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "integer"
+            },
+            "in": "query",
+            "name": "customerId",
+            "description": "Numero de cliente cobis"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "3645770022",
+              "minLength": 5,
+              "maxLength": 10
+            },
+            "in": "query",
+            "name": "accountNumber",
+            "description": "Numero de cuenta"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "enum": [
+                3,
+                4
+              ],
+              "example": 3
+            },
+            "in": "query",
+            "name": "accountType",
+            "description": "Tipo de producto "
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "name": "userId",
+            "description": "Nombre que identifica al usuario del canal"
+          },
+          {
+            "$ref": "./demandDeposits.v1.json#/components/parameters/Limit"
+          },
+          {
+            "$ref": "./demandDeposits.v1.json#/components/parameters/OffSet"
+          }
+        ],
+        "tags": [
+          "Efectivo Movil"
+        ]
+      },
+      "post": {
+        "summary": "Realizar un envío de Efectivo Móvil",
+        "operationId": "mobile-cash-create-http",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "required": [
+                                "reference"
+                              ],
+                              "properties": {
+                                "reference": {
+                                  "$ref": "../Models/Transactions/ReferenceNumber.v1.yaml"
+                                }
+                              }
+                            }
+                          },
+                          "required": [
+                            "result"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "MobileCashCreateRsExample": {
+                    "value": {
+                      "code": "OPERATION_SUCCESSFUL",
+                      "message": "Operación exitosa",
+                      "data": {
+                        "result": {
+                          "reference": "1064052816512"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment Required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "InsufficientFoundsRsExample": {
+                    "value": {
+                      "code": "INSUFFICIENT_FOUNDS",
+                      "message": "Fondos insuficientes"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "AccountNotFoundRsExample": {
+                    "value": {
+                      "code": "ACCOUNT_NOT_FOUND",
+                      "message": "No se encontro el numero de cuenta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/Method-Not-Allowed"
+          },
+          "422": {
+            "description": "Unprocessable Entity (WebDAV)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "LimitsExceededRsExample": {
+                    "value": {
+                      "code": "LIMITS_EXCEEDED",
+                      "message": "Limite excedido"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "accountType": {
+                    "$ref": "../Models/Products/AccountTypeCode.yaml"
+                  },
+                  "accountNumber": {
+                    "$ref": "../Models/Products/AccountNumber.v1.yaml"
+                  },
+                  "currency": {
+                    "$ref": "../Models/Products/CurrencyCode.yaml"
+                  },
+                  "amount": {
+                    "$ref": "../Models/CreditCard/Amount.v1.yaml"
+                  },
+                  "beneficiaryPhone": {
+                    "$ref": "../Models/Customer/CellPhone.yaml"
+                  },
+                  "beneficiaryName": {
+                    "$ref": "../Models/Transactions/BeneficiaryName.yaml"
+                  }
+                },
+                "required": [
+                  "accountType",
+                  "accountNumber",
+                  "currency",
+                  "amount",
+                  "beneficiaryPhone"
+                ]
+              },
+              "examples": {
+                "BodyRqExample": {
+                  "value": {
+                    "accountType": 3,
+                    "accountNumber": "3645770022",
+                    "currency": 0,
+                    "amount": 100,
+                    "beneficiaryPhone": "58526545",
+                    "beneficiaryName": "JUAN LUIS GONZALEZ LOPEZ"
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        },
+        "description": "Realizar un envío de efectivo móvil",
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Channel"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/branch"
+          },
+          {
+            "$ref": "./debitCards.v1.json#/components/parameters/User"
+          }
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "tags": [
+          "Efectivo Movil"
+        ]
+      },
+      "put": {
+        "summary": "Reenvío de Efectivo Móvil",
+        "operationId": "mobile-cash-resend-http",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "required": [
+                                "referenceNumber"
+                              ],
+                              "properties": {
+                                "referenceNumber": {
+                                  "$ref": "../Models/Transactions/ReferenceNumber.v1.yaml"
+                                }
+                              }
+                            }
+                          },
+                          "required": [
+                            "result"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "MobileCashNotFoundRsExample": {
+                    "value": {
+                      "code": "MOBILE_CASH_NOT_FOUND",
+                      "message": "No se encontro el registro de efectivo móvil"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/Method-Not-Allowed"
+          },
+          "406": {
+            "description": "Not Acceptable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "MobileCashNotAcceptableRs": {
+                    "value": {
+                      "code": "MOBILE_CASH_NOT_ACCEPTABLE",
+                      "message": "El estado del efectivo móvil no permite actualización"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Method-Not-Allowed"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "description": "Reenviar el código del Efectivo Móvil",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Channel"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/branch"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "operationId": {
+                    "$ref": "../Models/Operation/OperationId.yaml"
+                  },
+                  "amount": {
+                    "$ref": "../Models/CreditCard/Amount.v1.yaml"
+                  },
+                  "cellPhone": {
+                    "$ref": "../Models/Customer/CellPhone.yaml"
+                  }
+                },
+                "required": [
+                  "operationId"
+                ]
+              },
+              "examples": {
+                "mobileCashResendRqExample": {
+                  "value": {
+                    "operationId": 12345,
+                    "amount": 100,
+                    "cellPhone": "58526545"
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        },
+        "tags": [
+          "Efectivo Movil"
+        ]
+      },
+      "patch": {
+        "summary": "Cancelar Efectivo Móvil",
+        "operationId": "mobile-cash-cancellation-http",
+        "responses": {
+          "200": {
+            "description": "Transacción correcta",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "required": [
+                                "referenceNumber"
+                              ],
+                              "properties": {
+                                "referenceNumber": {
+                                  "$ref": "../Models/Transactions/ReferenceNumber.v1.yaml"
+                                }
+                              }
+                            }
+                          },
+                          "required": [
+                            "result"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "mobileCashCancellationRsExample": {
+                    "value": {
+                      "code": "OPERATION_SUCCESSFUL",
+                      "message": "Operación exitosa",
+                      "data": {
+                        "result": {
+                          "referenceNumber": "1064052816512"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "MobileCashNotFoundRsExample": {
+                    "value": {
+                      "code": "MOBILE_CASH_NOT_FOUND",
+                      "message": "No se encontro el registro de efectivo móvil"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/Method-Not-Allowed"
+          },
+          "406": {
+            "description": "Not Acceptable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "MobileCashNotAcceptableRs": {
+                    "value": {
+                      "code": "MOBILE_CASH_NOT_ACCEPTABLE",
+                      "message": "El estado del efectivo móvil no permite actualización"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "description": "Cancelación del Efectivo Móvil por no utilización",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Channel"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/branch"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "operationId": {
+                    "$ref": "../Models/Operation/OperationId.yaml"
+                  },
+                  "amount": {
+                    "$ref": "../Models/CreditCard/Amount.v1.yaml"
+                  },
+                  "cellPhone": {
+                    "$ref": "../Models/Customer/CellPhone.yaml"
+                  }
+                },
+                "required": [
+                  "operationId"
+                ]
+              },
+              "examples": {
+                "mobileCashCancellationRqExample": {
+                  "value": {
+                    "operationId": 12345,
+                    "amount": 100,
+                    "cellPhone": "58526545"
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        },
+        "tags": [
+          "Efectivo Movil"
+        ]
+      }
+    },
+    "/debitCards/{idCobis}/cards": {
+      "parameters": [
+        {
+          "$ref": "./customers.v1.json#/components/parameters/idCobis"
+        }
+      ],
+      "get": {
+        "summary": "Consulta de tarjetas de débito",
+        "tags": [
+          "Consulta"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "debitCards"
+                          ],
+                          "properties": {
+                            "debitCards": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "cardNumber": {
+                                    "$ref": "../Models/DebitCard/CardNumber.v1.yaml"
+                                  },
+                                  "cardName": {
+                                    "$ref": "../Models/CreditCard/CardName.v1.yaml"
+                                  },
+                                  "cardType": {
+                                    "$ref": "../Models/DebitCard/CardType.v1.yaml"
+                                  },
+                                  "status": {
+                                    "$ref": "../Models/DebitCard/CardStatus.v1.yaml"
+                                  },
+                                  "reasonStatus": {
+                                    "$ref": "../Models/DebitCard/ReasonStatus.v1.yaml"
+                                  },
+                                  "accountType": {
+                                    "$ref": "../Models/Products/AccountType.v1.yaml"
+                                  },
+                                  "accountNumber": {
+                                    "$ref": "../Models/Products/AccountNumber.v1.yaml"
+                                  },
+                                  "accountName": {
+                                    "$ref": "../Models/Products/AccountName.v1.yaml"
+                                  },
+                                  "ownershipType": {
+                                    "$ref": "../Models/DebitCard/OwnershipType.v1.yaml"
+                                  },
+                                  "encryptedCardNumber": {
+                                    "$ref": "../Models/DebitCard/EncryptedCard.v1.yaml"
+                                  }
+                                },
+                                "required": [
+                                  "cardNumber",
+                                  "cardName",
+                                  "cardType",
+                                  "status",
+                                  "reasonStatus",
+                                  "accountType",
+                                  "accountNumber",
+                                  "accountName",
+                                  "ownershipType"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ],
+                  "type": "object"
+                },
+                "examples": {
+                  "DebitCardConsultaRsExample": {
+                    "value": {
+                      "data": {
+                        "debitCards": [
+                          {
+                            "cardNumber": "4756",
+                            "cardName": "PEDRO PEREZ",
+                            "status": {
+                              "code": "A",
+                              "description": "ACTIVA"
+                            },
+                            "reasonStatus": {
+                              "code": "EMI",
+                              "description": "EMISION INICIAL"
+                            },
+                            "accountType": {
+                              "code": 3,
+                              "description": "CUENTA CORRIENTE"
+                            },
+                            "accountNumber": "3645770022",
+                            "accountName": "PEDRO PEREZ",
+                            "cardType": {
+                              "code": "V",
+                              "description": "VISA CLASICA",
+                              "bin": "47453270"
+                            }
+                          },
+                          {
+                            "cardNumber": "4768",
+                            "cardName": "PEDRO PEREZ",
+                            "status": {
+                              "code": "W",
+                              "description": "BLOQUEO TEMPORAL"
+                            },
+                            "reasonStatus": {
+                              "code": "SCL",
+                              "description": "SOLICITADA POR EL CLIENTE"
+                            },
+                            "accountType": {
+                              "code": 3,
+                              "description": "CUENTA CORRIENTE"
+                            },
+                            "accountNumber": "3645770044",
+                            "accountName": "PEDRO PEREZ",
+                            "cardType": {
+                              "code": "W",
+                              "description": "VISA ORO"
+                            },
+                            "ownershipType": "T",
+                            "encryptedCardNumber": "AJLKSDF87A9S6D9F7QWERH"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Customer Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "CustomerNotFoundRsExample": {
+                    "value": {
+                      "code": "CUSTOMER_NOT_FOUND",
+                      "message": "Cliente no encontrado"
+                    }
+                  },
+                  "DebitCardNotFoundRsExample": {
+                    "value": {
+                      "code": "DEBIT_CARD_NOT_FOUND",
+                      "message": "Tarjeta de débito no encontrada"
+                    }
+                  },
+                  "DebitCardsNotFoundRsExample": {
+                    "value": {
+                      "code": "DEBIT_CARDS_NOT_FOUND",
+                      "message": "No se encontró ninguna tarjeta de débito"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "operationId": "debit-cards-consulta-http",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "description": "Consulta de tarjetas de débito del cliente",
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "#/components/parameters/cardNumberFilter"
+          },
+          {
+            "$ref": "#/components/parameters/cardStatusFilter"
+          }
+        ]
+      },
+      "post": {
+        "summary": "Creación tarjeta de débito",
+        "operationId": "debit-cards-create-http",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "properties": {
+                                "cardNumber": {
+                                  "$ref": "../Models/FinancialServices/ProductNumber.v1.yaml"
+                                }
+                              }
+                            }
+                          },
+                          "required": [
+                            "result"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "operationSuccessRsExample": {
+                    "value": {
+                      "code": "OPERATION_SUCCESSFUL",
+                      "message": "Operación exitosa",
+                      "data": {
+                        "result": {
+                          "cardNumber": "112233445566223"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "CustomerNotFoundRsExample": {
+                    "value": {
+                      "code": "CUSTOMER_NOT_FOUND",
+                      "message": "Cliente no encontrado"
+                    }
+                  },
+                  "AccountNotFoundRsExample": {
+                    "value": {
+                      "code": "ACCOUNT_NOT_FOUND",
+                      "message": "Cuenta no encontrada"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Error de procesamiento",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "CustomerInvalidStateRsExample": {
+                    "value": {
+                      "code": "STATE_INVALID",
+                      "message": "Cliente en estado invalido"
+                    }
+                  },
+                  "AccountStateInvalidRsExample": {
+                    "value": {
+                      "code": "STATE_INVALID",
+                      "message": "Cuenta en estado invalido"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "description": "Creación de tarjeta de débito",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Channel"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/branch"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cardType": {
+                    "$ref": "../Models/DebitCard/CardTypeCode.v1.yaml"
+                  },
+                  "currency": {
+                    "$ref": "../Models/Products/CurrencyCode.yaml"
+                  },
+                  "cardCost": {
+                    "$ref": "../Models/DebitCard/CardCost.v1.yaml"
+                  },
+                  "designCode": {
+                    "$ref": "../Models/DebitCard/DesignCode.v1.yaml"
+                  },
+                  "accountType": {
+                    "$ref": "../Models/Products/ProductTypeCode.v1.yaml"
+                  },
+                  "accountNumber": {
+                    "$ref": "../Models/Products/AccountNumber.v1.yaml"
+                  },
+                  "insurance": {
+                    "$ref": "../Models/Products/InsuranceDebitCard.v1.yaml"
+                  },
+                  "plan": {
+                    "$ref": "../Models/DebitCard/CardPlanCode.v1.yaml"
+                  },
+                  "delivery": {
+                    "type": "object",
+                    "required": [
+                      "deliveryType"
+                    ],
+                    "properties": {
+                      "deliveryType": {
+                        "$ref": "../Models/DebitCard/DeliveryType.v1.yaml"
+                      },
+                      "preferenceBranch": {
+                        "$ref": "../Models/Cobis/BranchCode.yaml"
+                      },
+                      "addressId": {
+                        "$ref": "../Models/Cobis/AddressId.v1.yaml"
+                      },
+                      "phoneId": {
+                        "$ref": "../Models/Customer/PhoneId.v1.yaml"
+                      }
+                    }
+                  },
+                  "traveler": {
+                    "type": "object",
+                    "properties": {
+                      "travelerId": {
+                        "$ref": "../Models/Products/TravelerId.v1.yaml"
+                      },
+                      "travelerName": {
+                        "$ref": "../Models/Customer/Name.v1.yaml"
+                      },
+                      "travelerLastname": {
+                        "$ref": "../Models/Customer/LastName.v1.yaml"
+                      },
+                      "travelerPhone": {
+                        "$ref": "../Models/Customer/CellPhone.yaml"
+                      },
+                      "travelerAddress": {
+                        "$ref": "../Models/Cobis/AddressDescription.v1.yaml"
+                      },
+                      "travelerEmail": {
+                        "$ref": "../Models/Cobis/Email.v1.yaml"
+                      }
+                    }
+                  },
+                  "employer": {
+                    "$ref": "../Models/Collections/UserCode.v1.yaml"
+                  }
+                },
+                "required": [
+                  "cardType",
+                  "currency",
+                  "cardCost",
+                  "designCode",
+                  "accountType",
+                  "accountNumber",
+                  "insurance",
+                  "plan",
+                  "delivery",
+                  "employer"
+                ]
+              },
+              "examples": {
+                "exampleRequestVisaClasicaBranch": {
+                  "value": {
+                    "cardType": "V",
+                    "currency": 0,
+                    "cardCost": "SINC",
+                    "designCode": 782,
+                    "accountType": 3,
+                    "accountNumber": "3645770022",
+                    "insurance": "S",
+                    "plan": 2,
+                    "delivery": {
+                      "deliveryType": "A",
+                      "preferenceBranch": 156
+                    },
+                    "employer": "00012365"
+                  }
+                },
+                "exampleRequestMillage": {
+                  "value": {
+                    "cardType": "Y",
+                    "currency": 0,
+                    "cardCost": "SINC",
+                    "designCode": 782,
+                    "accountType": 20,
+                    "accountNumber": "3645770022",
+                    "insurance": "N",
+                    "plan": 2,
+                    "delivery": {
+                      "deliveryType": "A",
+                      "preferenceBranch": 156,
+                      "addressId": 1,
+                      "phoneId": 1
+                    },
+                    "traveler": {
+                      "travelerId": "22803018803",
+                      "travelerName": "CARLOS",
+                      "travelerLastname": "LOPEZ",
+                      "travelerPhone": "58281105",
+                      "travelerAddress": "119 CALLE FINAL ",
+                      "travelerEmail": "juandelacruz@correo.com"
+                    },
+                    "employer": "00012365"
+                  }
+                },
+                "exampleRequestVisaClasicaAddress": {
+                  "value": {
+                    "cardType": "V",
+                    "currency": 0,
+                    "cardCost": "SINC",
+                    "designCode": 782,
+                    "accountType": 20,
+                    "accountNumber": "3645770022",
+                    "insurance": "S",
+                    "plan": 2,
+                    "delivery": {
+                      "deliveryType": "B",
+                      "addressId": 1,
+                      "phoneId": 1
+                    },
+                    "employer": "00012365"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Paso de parametros para creación de tarjeta asociado a cuenta"
+        },
+        "tags": [
+          "Gestiones"
+        ]
+      }
+    },
+    "/debitCards/manage/block": {
+      "parameters": [],
+      "post": {
+        "summary": "Bloqueo/Desbloqueo de Tarjeta de Débito",
+        "tags": [
+          "Gestiones"
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "result"
+                          ],
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "required": [
+                                "referenceNumber"
+                              ],
+                              "properties": {
+                                "referenceNumber": {
+                                  "$ref": "../Models/Transactions/ReferenceNumber.v1.yaml"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                },
+                "examples": {
+                  "DebitCardBlockageRsExample": {
+                    "value": {
+                      "code": "OPERATION_SUCCESSFUL",
+                      "message": "Operación exitosa",
+                      "data": {
+                        "result": {
+                          "referenceNumber": "1064052816512"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "Client Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "CustomerNotFoundRsExample": {
+                    "value": {
+                      "code": "CUSTOMER_NOT_FOUDN",
+                      "message": "Cliente no encontrado"
+                    }
+                  },
+                  "DebitCardNotFoundRsExample": {
+                    "value": {
+                      "code": "DEBIT_CARD_NOT_FOUND",
+                      "message": "Tarjeta de débito no encontrada"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/Method-Not-Allowed"
+          },
+          "406": {
+            "$ref": "#/components/responses/Not-Acceptable"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable-Entity"
+          },
+          "423": {
+            "description": "Debit Card Locked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "DebitCardLockedRsExample": {
+                    "value": {
+                      "code": "DEBIT_CARD_LOCKED",
+                      "message": "Tarjeta de débito está bloqueada"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "operationId": "debit-cards-block-http",
+        "description": "Bloquear o desbloquear una tarjeta de débito",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/channel"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/branch"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/reason"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idCobis": {
+                    "$ref": "../Models/Customer/idCobis.v1.yaml"
+                  },
+                  "cardNumber": {
+                    "$ref": "../Models/DebitCard/CardNumber.v1.yaml"
+                  },
+                  "operationTypeCode": {
+                    "$ref": "../Models/DebitCard/BlockageOperationTypeCode.v1.yaml"
+                  },
+                  "blockageTypeCode": {
+                    "$ref": "../Models/DebitCard/BlockageTypeCode.v1.yaml"
+                  },
+                  "deliveryBranch": {
+                    "$ref": "../Models/Cobis/BranchCode.yaml"
+                  }
+                },
+                "required": [
+                  "idCobis",
+                  "cardNumber",
+                  "operationTypeCode"
+                ]
+              },
+              "examples": {
+                "DebitCardTemporaryBlockageRqExample": {
+                  "value": {
+                    "idCobis": 243703,
+                    "cardNumber": "7886",
+                    "operationTypeCode": "B",
+                    "blockageTypeCode": "T"
+                  }
+                },
+                "DebitCardUnblockageRqExample": {
+                  "value": {
+                    "idCobis": 243703,
+                    "cardNumber": "7886",
+                    "operationTypeCode": "D"
+                  }
+                },
+                "DebitCardPermanentBlockageRqExample": {
+                  "value": {
+                    "idCobis": 243703,
+                    "cardNumber": "7886",
+                    "operationTypeCode": "B",
+                    "blockageTypeCode": "P",
+                    "branch": 156
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        }
+      }
+    },
+    "/debitCards/manage/changePIN": {
+      "parameters": [],
+      "post": {
+        "summary": "Cambio de pin de Tarjeta de Débito",
+        "tags": [
+          "Gestiones"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "result"
+                          ],
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "required": [
+                                "referenceNumber"
+                              ],
+                              "properties": {
+                                "referenceNumber": {
+                                  "$ref": "../Models/Transactions/ReferenceNumber.v1.yaml"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                },
+                "examples": {
+                  "PinChangeSuccessfulRsExample": {
+                    "value": {
+                      "code": "OPERATION_SUCCESSFUL",
+                      "message": "Operación exitosa",
+                      "data": {
+                        "result": {
+                          "referenceNumber": "1064052816512"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "405": {
+            "$ref": "#/components/responses/Method-Not-Allowed"
+          },
+          "406": {
+            "$ref": "#/components/responses/Not-Acceptable"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable-Entity"
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "operationId": "debit-card-pin-change-http",
+        "description": "Realiza el proceso de cambio de pin de la tarjeta de débito",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idCobis": {
+                    "$ref": "../Models/Customer/idCobis.v1.yaml"
+                  },
+                  "cardNumber": {
+                    "$ref": "../Models/DebitCard/CardNumber.v1.yaml"
+                  },
+                  "pinNumber": {
+                    "$ref": "../Models/DebitCard/PinNumber.v1.yaml"
+                  }
+                },
+                "required": [
+                  "idCobis",
+                  "cardNumber",
+                  "pinNumber"
+                ]
+              }
+            }
+          },
+          "description": "Body del requerimiento para cambio de pin"
+        },
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/channel"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/branch"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/reason"
+          }
+        ]
+      }
+    },
+    "/debitCards/manage/limits/{idCobis}": {
+      "parameters": [
+        {
+          "$ref": "./demandDeposits.v1.json#/components/parameters/idCobis"
+        }
+      ],
+      "post": {
+        "summary": "Actualizar de Límite de Tarjeta Empresarial",
+        "tags": [
+          "Gestiones"
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "result"
+                          ],
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "required": [
+                                "referenceNumber"
+                              ],
+                              "properties": {
+                                "referenceNumber": {
+                                  "$ref": "../Models/Transactions/ReferenceNumber.v1.yaml"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                },
+                "examples": {
+                  "DebitCardBlockageRsExample": {
+                    "value": {
+                      "code": "OPERATION_SUCCESSFUL",
+                      "message": "Operación exitosa",
+                      "data": {
+                        "result": {
+                          "referenceNumber": "1064052816512"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "Client Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "CustomerNotFoundRsExample": {
+                    "value": {
+                      "code": "CUSTOMER_NOT_FOUDN",
+                      "message": "Cliente no encontrado"
+                    }
+                  },
+                  "DebitCardNotFoundRsExample": {
+                    "value": {
+                      "code": "DEBIT_CARD_NOT_FOUND",
+                      "message": "Tarjeta de débito no encontrada"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable-Entity"
+          },
+          "423": {
+            "description": "Debit Card Locked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "DebitCardLockedRsExample": {
+                    "value": {
+                      "code": "DEBIT_CARD_LOCKED",
+                      "message": "Tarjeta de débito está bloqueada"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "operationId": "post-debit-cards-limits-http",
+        "description": "Realiza la gestión de un aumento o disminución de Límites",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/channel"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/branch"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cardNumber": {
+                    "$ref": "../Models/DebitCard/CardNumber.v1.yaml"
+                  },
+                  "type": {
+                    "$ref": "../Models/DebitCard/LimitRequestType.v1.yaml"
+                  },
+                  "amount": {
+                    "$ref": "../Models/DebitCard/LimitRequestAmmount.v1.yaml"
+                  },
+                  "description": {
+                    "$ref": "../Models/DebitCard/LimitRequestDescription.v1.yaml"
+                  }
+                },
+                "required": [
+                  "cardNumber",
+                  "type",
+                  "amount",
+                  "description"
+                ]
+              },
+              "examples": {
+                "DebitCardTemporaryBlockageRqExample": {
+                  "value": {
+                    "idCobis": 243703,
+                    "cardNumber": "7886",
+                    "operationTypeCode": "B",
+                    "blockageTypeCode": "T"
+                  }
+                },
+                "DebitCardUnblockageRqExample": {
+                  "value": {
+                    "idCobis": 243703,
+                    "cardNumber": "7886",
+                    "operationTypeCode": "D"
+                  }
+                },
+                "DebitCardPermanentBlockageRqExample": {
+                  "value": {
+                    "idCobis": 243703,
+                    "cardNumber": "7886",
+                    "operationTypeCode": "B",
+                    "blockageTypeCode": "P",
+                    "branch": 156
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        },
+        "x-integration-type": "CONTAINER"
+      },
+      "get": {
+        "summary": "Consulta de Límites Empresariales",
+        "operationId": "get-debit-cards-limits-http",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "debitCards": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "cardNumber": {
+                                    "$ref": "../Models/DebitCard/CardNumber.v1.yaml"
+                                  },
+                                  "cardName": {
+                                    "$ref": "../Models/CreditCard/CardName.v1.yaml"
+                                  },
+                                  "cardType": {
+                                    "$ref": "../Models/DebitCard/CardType.v1.yaml"
+                                  },
+                                  "cardStatus": {
+                                    "$ref": "../Models/DebitCard/CardStatus.v1.yaml"
+                                  },
+                                  "limitAmount": {
+                                    "$ref": "../Models/DebitCard/LimitAmmount.v1.yaml"
+                                  },
+                                  "ownershipType": {
+                                    "$ref": "../Models/DebitCard/OwnershipType.v1.yaml"
+                                  },
+                                  "limitStatus": {
+                                    "$ref": "../Models/DebitCard/LimitStatusCode.v1.yaml"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "SuccessRsExample": {
+                    "value": {
+                      "code": "OPERATION_SUCCESSFUL",
+                      "message": "Operación exitosa",
+                      "data": {
+                        "debitCards": [
+                          {
+                            "cardNumber": "4756",
+                            "cardName": "PEDRO PEREZ",
+                            "cardType": {
+                              "code": "V",
+                              "description": "VISA CLASICA"
+                            },
+                            "cardStatus": {
+                              "code": "A",
+                              "description": "ACTIVA"
+                            },
+                            "limitAmount": 1000,
+                            "ownershipType": "T",
+                            "limitStatus": "A"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "NotFoundRsExample": {
+                    "value": {
+                      "code": "NOT_FOUND_ERROR",
+                      "message": "Elmento no encontrado"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "description": "Devuelve información de límites sobre tarjetas empresariables",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/cardNumberFilter"
+          },
+          {
+            "$ref": "#/components/parameters/cardStatusFilter"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/channel"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/branch"
+          }
+        ],
+        "tags": [
+          "Consulta"
+        ],
+        "x-integration-type": "CONTAINER"
+      }
+    },
+    "/debitCards/manage/limits/activate": {
+      "parameters": [],
+      "post": {
+        "summary": "Activación e Inactivación de Límites para Tarjetas Empresariales",
+        "tags": [
+          "Gestiones"
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "result"
+                          ],
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "required": [
+                                "referenceNumber"
+                              ],
+                              "properties": {
+                                "referenceNumber": {
+                                  "$ref": "../Models/Transactions/ReferenceNumber.v1.yaml"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                },
+                "examples": {
+                  "DebitCardBlockageRsExample": {
+                    "value": {
+                      "code": "OPERATION_SUCCESSFUL",
+                      "message": "Operación exitosa",
+                      "data": {
+                        "result": {
+                          "referenceNumber": "1064052816512"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "Client Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "CustomerNotFoundRsExample": {
+                    "value": {
+                      "code": "CUSTOMER_NOT_FOUDN",
+                      "message": "Cliente no encontrado"
+                    }
+                  },
+                  "DebitCardNotFoundRsExample": {
+                    "value": {
+                      "code": "DEBIT_CARD_NOT_FOUND",
+                      "message": "Tarjeta de débito no encontrada"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/Method-Not-Allowed"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable-Entity"
+          },
+          "423": {
+            "description": "Debit Card Locked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "DebitCardLockedRsExample": {
+                    "value": {
+                      "code": "DEBIT_CARD_LOCKED",
+                      "message": "Tarjeta de débito está bloqueada"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "operationId": "post-debit-cards-limits-activate-http",
+        "description": "Realiza la gestión de un aumento o disminución de Límites",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/channel"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/branch"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idCobis": {
+                    "$ref": "../Models/Customer/idCobis.v1.yaml"
+                  },
+                  "cardNumber": {
+                    "$ref": "../Models/DebitCard/CardNumber.v1.yaml"
+                  },
+                  "operationType": {
+                    "$ref": "../Models/DebitCard/ActivateOperationTypeCode.v1.yaml"
+                  }
+                },
+                "required": [
+                  "idCobis",
+                  "cardNumber",
+                  "operationType"
+                ]
+              },
+              "examples": {
+                "DebitCardTemporaryBlockageRqExample": {
+                  "value": {
+                    "idCobis": 243703,
+                    "cardNumber": "7886",
+                    "operationTypeCode": "B",
+                    "blockageTypeCode": "T"
+                  }
+                },
+                "DebitCardUnblockageRqExample": {
+                  "value": {
+                    "idCobis": 243703,
+                    "cardNumber": "7886",
+                    "operationTypeCode": "D"
+                  }
+                },
+                "DebitCardPermanentBlockageRqExample": {
+                  "value": {
+                    "idCobis": 243703,
+                    "cardNumber": "7886",
+                    "operationTypeCode": "B",
+                    "blockageTypeCode": "P",
+                    "branch": 156
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        },
+        "x-integration-type": "CONTAINER"
+      }
+    },
+    "/debitCards/manage/notificationTravel": {
+      "post": {
+        "summary": "Notificación de Viaje",
+        "operationId": "debit-cards-notification-travel-http",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "properties": {
+                                "Document": {
+                                  "$ref": "../Models/CreditCard/request/DocumentRequest.v1.yaml"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "NotificationTravelRsExample": {
+                    "value": {
+                      "code": "OPERATION_SUCCESSFUL",
+                      "message": "Operación exitosa",
+                      "data": {
+                        "result": {
+                          "Document": "GEST_MV_090703102040"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity (WebDAV)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "ProcessingErrorRsExample": {
+                    "value": {
+                      "code": "PROCESSING_ERROR",
+                      "message": "Mensaje que devuelve el error de procesamiento"
+                    }
+                  },
+                  "RequestDuplicateRsExample": {
+                    "value": {
+                      "code": "DUPLICATE_REQUEST",
+                      "message": "Solicitud duplicada en el día"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "description": "Servicio que se encarga de grabar una gestión administrativa para permitir compras en el extrangero",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Channel"
+          },
+          {
+            "$ref": "./composition.v1.json#/components/parameters/branch"
+          }
+        ],
+        "tags": [
+          "Gestiones"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idCobis": {
+                    "$ref": "../Models/Customer/idCobis.v1.yaml"
+                  },
+                  "cardNumber": {
+                    "$ref": "../Models/DebitCard/CardNumber.v1.yaml"
+                  },
+                  "initialDate": {
+                    "$ref": "../Models/CreditCard/request/InitialDate.v1.yaml"
+                  },
+                  "finalDate": {
+                    "$ref": "../Models/CreditCard/request/FinalDate.v1.yaml"
+                  },
+                  "email": {
+                    "$ref": "../Models/Cobis/Email.v1.yaml"
+                  },
+                  "reference1": {
+                    "$ref": "../Models/CreditCard/request/Reference.v1.yaml"
+                  },
+                  "reference2": {
+                    "$ref": "../Models/CreditCard/request/Reference.v1.yaml"
+                  },
+                  "countrys": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "../Models/Cobis/Country.v1.yaml"
+                    }
+                  },
+                  "description": {
+                    "$ref": "../Models/CreditCard/request/Description.v1.yaml"
+                  }
+                },
+                "required": [
+                  "idCobis",
+                  "cardNumber",
+                  "initialDate",
+                  "finalDate",
+                  "email",
+                  "reference1",
+                  "countrys"
+                ]
+              },
+              "examples": {
+                "NotificationTravelRqExample": {
+                  "value": {
+                    "idCobis": 376548,
+                    "cardNumber": "4756",
+                    "initialDate": "2022-05-01",
+                    "finalDate": "2022-05-15",
+                    "email": "juancaceres@correo.com",
+                    "reference1": {
+                      "name": "Juan Pablo Caceres Arrazola",
+                      "Phone": "59347682"
+                    },
+                    "countrys": [
+                      {
+                        "code": 1,
+                        "name": "GUATEMALA"
+                      }
+                    ],
+                    "description": "realizare un viaje por vacaciones"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "responses": {
+      "Uncontroller-Error": {
+        "description": "Uncontroller error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "uncontrollerErrorRsExample": {
+                "value": {
+                  "code": "UNCONTROLLER_ERROR",
+                  "message": "Mensaje generico según la excepcion"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Service-Unavailable": {
+        "description": "Servicio no disponible  ",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "ServicesUnavailableRsExample": {
+                "value": {
+                  "code": "SERVICE_UNAVAILABLE",
+                  "message": "Servicio no disponible"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Method-Not-Allowed": {
+        "description": "Metodo no permitido",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "MethodNotAllowedRsExample": {
+                "value": {
+                  "code": "METHOD_NOT_ALLOWED",
+                  "message": "Servicio no autorizado."
+                }
+              }
+            }
+          }
+        }
+      },
+      "Unprocessable-Entity": {
+        "description": "Error de procesamiento",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "ProcessingErrorRsExample": {
+                "value": {
+                  "code": "PROCESSING_ERROR",
+                  "message": "Mensaje que devuelve el error de procesamiento"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Transacción/Usuario/rol no permitido",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "UnauthorizedRsExample": {
+                "value": {
+                  "code": "UNAUTHORIZED",
+                  "message": "Usuario, rol o transacción no permitido"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Not-Acceptable": {
+        "description": "Not acceptable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "NotAcceptableRsExample": {
+                "value": {
+                  "code": "NOT_ACCEPTABLE",
+                  "message": "Mensaje que devuelve el error de validación"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "operationId": {
+        "name": "operationId",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "example": 12345
+        },
+        "description": "Identificador de la operación"
+      },
+      "User": {
+        "name": "User",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Código de usuario con el que se identifica en el canal"
+      },
+      "cellPhone": {
+        "name": "cellPhone",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "pattern": "",
+          "example": "58181104"
+        },
+        "description": "Número de teléfono del beneficiario"
+      },
+      "cardNumberFilter": {
+        "name": "cardNumberFilter",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Ultimos 4 digitos de la tarjeta de debito."
+      },
+      "cardStatusFilter": {
+        "name": "cardStatusFilter",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1,
+          "example": "A"
+        },
+        "description": "Filtro de estado de tarjeta de débito, si no indica un estado especifico se consultara los estados \"A\", \"W\" y \"E\""
+      },
+      "idCliente": {
+        "name": "idCliente",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Consecutivo asociado a cliente "
+      }
+    },
+    "securitySchemes": {
+      "api_key": {
+        "name": "x-api-key",
+        "type": "apiKey",
+        "in": "header",
+        "description": "API Key asignado para otorgar accesos a los distintos endpoints del API"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Bamavisa"
+    },
+    {
+      "name": "Consulta"
+    },
+    {
+      "name": "Efectivo Movil"
+    },
+    {
+      "name": "Gestiones"
+    },
+    {
+      "name": "Tarjeta-Debito"
+    },
+    {
+      "name": "Valida-PIN"
+    }
+  ],
+  "security": [
+    {
+      "api_key": []
+    }
+  ]
+}

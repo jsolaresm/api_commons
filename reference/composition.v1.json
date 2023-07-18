@@ -1,0 +1,1494 @@
+{
+  "openapi": "3.0.0",
+  "x-stoplight": {
+    "id": "mrahjg53ukya2"
+  },
+  "info": {
+    "title": "composition",
+    "version": "1.0",
+    "description": "Servicios de composición que se encargan de orquestar múltiples servicios para realizar alguna operaciones entre distintos tipos de CORE BAM",
+    "contact": {
+      "name": "Rony Reyes",
+      "email": "rony.reyes@bam.com.gt"
+    },
+    "license": {
+      "name": "Banco Agromercantil de Guatemala, S.A."
+    },
+    "x-tags": {
+      "bam:application-id": "rdct_api_composicion",
+      "bam:component": "servicios-core",
+      "bam:layer": "composicion",
+      "bam:tecnical-domain": "composition",
+      "bam:sox-compliance": "si",
+      "bam:billing-mode": "transversal",
+      "bam:cost-center": "0",
+      "bam:cost-center-project": "334",
+      "bam:impact": "BIA",
+      "bam:creator-user": "Rony Reyes - rony.reyes",
+      "bam:creator-email": "rony.reyes@bam.com.gt"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/composition/extrafinancing/depositToAccount": {
+      "post": {
+        "summary": "Extrafinanciamiento con deposito a cuenta",
+        "operationId": "extrafinancing-account-http",
+        "responses": {
+          "200": {
+            "description": "Extrafinanciamiento exitoso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "properties": {
+                                "capital": {
+                                  "$ref": "../Models/Loans/CapitalPayment.v1.yaml"
+                                },
+                                "interest": {
+                                  "$ref": "../Models/Loans/InterestPayment.v1.yaml"
+                                },
+                                "extrafinancingFee": {
+                                  "$ref": "../Models/Loans/LoanFee.v1.yaml"
+                                },
+                                "totalPayment": {
+                                  "$ref": "../Models/Loans/TotalPayment.v1.yaml"
+                                },
+                                "interestRate": {
+                                  "$ref": "../Models/CreditCard/ExtrafinancingRate.v1.yaml"
+                                },
+                                "autorization": {
+                                  "$ref": "../Models/CreditCard/Authorization.v1.yaml"
+                                },
+                                "sequential": {
+                                  "$ref": "../Models/Transactions/Secuential.v1.yaml"
+                                },
+                                "correlative": {
+                                  "$ref": "../Models/CreditCard/Correlative.yaml"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "ExtrafinancingRsExample": {
+                    "value": {
+                      "code": "string",
+                      "message": "string",
+                      "data": {
+                        "result": {
+                          "capital": 950.5,
+                          "interest": 249.5,
+                          "extrafinancingFee": 1200,
+                          "totalPayment": 14000,
+                          "interestRate": 1.58,
+                          "autorization": "67657",
+                          "sequential": 424722004,
+                          "correlative": 18763429
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/Method-Not-Allowed"
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "description": "Realiza un extrafinanciamiento con deposito a cuenta monetaria o de ahorros  ",
+        "tags": [
+          "Financiamiento"
+        ],
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Channel"
+          },
+          {
+            "$ref": "#/components/parameters/branch"
+          },
+          {
+            "$ref": "#/components/parameters/reason"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idCard": {
+                    "$ref": "../Models/CreditCard/IdCard.v1.yaml"
+                  },
+                  "term": {
+                    "$ref": "../Models/CreditCard/TermCode.yaml"
+                  },
+                  "currency": {
+                    "$ref": "../Models/Products/CurrencyCode.yaml"
+                  },
+                  "amount": {
+                    "$ref": "../Models/CreditCard/Amount.v1.yaml"
+                  },
+                  "promotionalCode": {
+                    "$ref": "../Models/CreditCard/PromotionalCode.yaml"
+                  },
+                  "accountType": {
+                    "$ref": "../Models/Products/AccountTypeCode.yaml"
+                  },
+                  "accountNumber": {
+                    "$ref": "../Models/Products/AccountNumber.v1.yaml"
+                  }
+                },
+                "required": [
+                  "term",
+                  "currency",
+                  "amount",
+                  "accountType",
+                  "accountNumber",
+                  "idCard"
+                ]
+              },
+              "examples": {
+                "BodyRqExample": {
+                  "value": {
+                    "idCard": 76548,
+                    "term": "24",
+                    "currency": 0,
+                    "amount": 1250,
+                    "promotionalCode": "EX54321",
+                    "accountType": 4,
+                    "accountNumber": "3645770022"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "parameters": []
+    },
+    "/composition/extrafinancing/paymentToCreditCard": {
+      "post": {
+        "summary": "Extrafinanciamiento con pago a tarjeta de credito",
+        "operationId": "extrafinancing-payment-tc-http",
+        "responses": {
+          "200": {
+            "description": "Extrafinanciamiento exitoso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "properties": {
+                                "capital": {
+                                  "$ref": "../Models/Loans/CapitalPayment.v1.yaml"
+                                },
+                                "interest": {
+                                  "$ref": "../Models/Loans/InterestPayment.v1.yaml"
+                                },
+                                "extrafinancingFee": {
+                                  "$ref": "../Models/Loans/LoanFee.v1.yaml"
+                                },
+                                "totalPayment": {
+                                  "$ref": "../Models/Loans/TotalPayment.v1.yaml"
+                                },
+                                "interestRate": {
+                                  "$ref": "../Models/CreditCard/ExtrafinancingRate.v1.yaml"
+                                },
+                                "autorization": {
+                                  "$ref": "../Models/CreditCard/Authorization.v1.yaml"
+                                },
+                                "sequential": {
+                                  "$ref": "../Models/Transactions/Secuential.v1.yaml"
+                                },
+                                "correlative": {
+                                  "$ref": "../Models/CreditCard/Correlative.yaml"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "ExtrafinancingRsExample": {
+                    "value": {
+                      "code": "string",
+                      "message": "string",
+                      "data": {
+                        "result": {
+                          "capital": 950.5,
+                          "interest": 249.5,
+                          "extrafinancingFee": 1200,
+                          "totalPayment": 14000,
+                          "interestRate": 1.58,
+                          "autorization": "67657",
+                          "sequential": 424722004,
+                          "correlative": 18763429
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/Method-Not-Allowed"
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "tags": [
+          "Financiamiento"
+        ],
+        "description": "Realiza un extrafinanciamiento con pago a tarjeta de crédito",
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Channel"
+          },
+          {
+            "$ref": "#/components/parameters/branch"
+          },
+          {
+            "$ref": "#/components/parameters/reason"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idCard": {
+                    "$ref": "../Models/CreditCard/IdCard.v1.yaml"
+                  },
+                  "term": {
+                    "$ref": "../Models/CreditCard/TermCode.yaml"
+                  },
+                  "currency": {
+                    "$ref": "../Models/Products/CurrencyCode.yaml"
+                  },
+                  "amount": {
+                    "$ref": "../Models/CreditCard/Amount.v1.yaml"
+                  },
+                  "promotionalCode": {
+                    "$ref": "../Models/CreditCard/PromotionalCode.yaml"
+                  }
+                },
+                "required": [
+                  "idCard",
+                  "term",
+                  "currency",
+                  "amount"
+                ]
+              },
+              "examples": {
+                "BodyRqExample": {
+                  "value": {
+                    "idCard": 76548,
+                    "term": "24",
+                    "currency": 0,
+                    "amount": 1250,
+                    "promotionalCode": "EX54321"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/composition/statement/pdf": {
+      "post": {
+        "summary": "Estado de cuenta PDF",
+        "tags": [
+          "Estado de cuenta"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "properties": {
+                                "statement": {
+                                  "$ref": "../Models/Products/StatementPDF.v1.yaml"
+                                }
+                              },
+                              "required": [
+                                "statement"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "StatementSuccessfullRsExample": {
+                    "value": {
+                      "code": "OPERATION_SUCCESSFUL",
+                      "message": "Operación exitosa",
+                      "data": {
+                        "result": {
+                          "statement": "255044462D312E340A25D3F4CCE10A312030206F626A0A3C3C0A2F4372656174696F6E44617465289EB4DC7FC3C00686E90B116A20F7CD6DBDC77B9EC0A972290A2F5469746C65289FDDBA0EB5BE17F29D1E625C6E568FA815B0B50CF4BEDC01290A2F417574686F72289EEB9E2E838556DBBD50553033A59974C3923FCF99FA3CB89358A98D60F06DCC84AA1CCD4E76A239BF5949E20502EA5F75904C7D1FB4F85C6232E7971182BAB8945949F0FB11AB58FADBB9A7C4AA633196E3EBE41E60DE7B219AC44B60290A2F5375626A6563742898EF802C9ED176D1AA514C3A61A29D3AE49E219994FC75909519988468F275DF5BE42680602BA239BFA31CB25255A9290A2F43726561746F72288ACAA83C999045C6F80F0F6C22EFCD63A8CE60DED0B122A097569C8563E071DF05B45BCD4E68AB290A2F50726F6475636572288ACAA83C999045C6F80F0F6C22EFCD63A8CE60DED0B122A097569C8563E071DF05B45BCD4E68AB290A3E3E0A656E646F626A0A322030206F626A0A3C3C0A2F547970652F436174616C6F670A2F506167654C61796F75742F4F6E65436F6C756D6E0A2F566965776572507265666572656E6365732034203020520A2F50616765732035203020520A3E3E0A656E646F626A0A332030206F626A0A3C3C0A2F50202D3832380A2F46696C7465722F5374616E646172640A2F5620320A2F4C656E677468203132380A2F5220330A2F4F2892933FFD16F471B55E86B3EB1778F3DEEF3F91F0A13FAB6688BEA81AE2DE8E81290A2F5528CBA31F2E03321D9C5A5EE562E69B817900000000000000000000000000000000290A3E3E0A656E646F626A0A342030206F626A0A3C3C0A2F486964654D656E7562617220747275650A3E3E0A656E646F626A0A352030206F626A0A3C3C0A2F547970652F50616765730A2F436F756E7420320A2F4B6964735B3620302052203234203020525D0A3E3E0A656E646F626A0A362030206F626A0A3C3C0A2F547970652F506167650A2F4D65646961426F785B30203020363132203739325D0A2F506172656E742035203020520A2F436F6E74656E74732037203020520A2F5265736F75726365730A3C3C0A2F50726F63536574205B2F5044462F546578742F496D616765422F496D616765432F496D616765495D0A2F584F626A6563740A3C3C0A2F49302038203020520A2F49312039203020520A3E3E0A2F4578744753746174650A3C3C0A2F475330203130203020520A2F475331203131203020520A3E3E0A2F466F6E740A3C3C0A2F4630203133203020520A2F4631203135203020520A2F4632203137203020520A2F4633203139203020520A2F4634203231203020520A2F4635203233203020520A3E3E0A3E3E0A2F47726F75700A3C3C0A2F43532F4465766963655247420A2F532F5472616E73706172656E63790A2F492066616C73650A2F4B2066616C73650A3E3E0A3E3E0A656E646F626A0A372030206F626A0A3C3C0A2F4C656E67746820323833370A2F46696C7465722F466C6174654465636F64650A3E3E0A73747265616D0AFD192F94E73D1A0D52C6F8177FBE3F4450C592D7F059371556489A1DC9E17D9741B5EA8189FE37B4AF49A2F3C9E63E276A047B23C1C4E3DE1A5544381CDEF8D1F273A8B911DA0DDC63C837CA103DAC96CCEC3CDAE068B601FF9901EFFFAB99FEDBDEF82ECF9638F3995E3A400531348D3E28C2263BDDD04188B1785F340601E5803788E60BCD8DD4FC16214CF20A47C098E53135375EC01A24476D6D35E8925DB64D8923F35D9AE95F1F839BB796DAAA5208E21AA8AE336796B402164D9086FA7987875FD06351B1618F23FC1BBBEDFDECB606556C8DF3C6521C436336EBC236058477DD7F38ECECBDE7CDD8A010EB1460F49CCCD1D6BBCD1516FED32EB763D89BC579EB0941E2088E940D273480EA4F9F6EB8A717D6D84C7BC56BC9C7F85FB3366B2F9D4A50E78ABD9A8D99936616B64B2CBA16D85C4EE66A983B02220401A95CD7D9474A5761FA3597571D842407E8064B579DCE91009CDF1E7F100725800FF1775BFE768FFA8C0ADA67B2B2E9EB89B4169ABC739A90D85F95BDC90805361B56F5BD754F2E07FC9EE74149552F0B125496F65DDCECF23B6E75502640390D4459574CB708924044852DFC7B2D833206B5C8551231F026D0495CA442C86A918EABC8E2215E45B31D8E468ED78D419787A706245FD1FB96FA14DD2A8888C51564066F5E0A7416F8CD30E6AF2748A7D369CB149DDCDFE8E58BFBD29BE8A00E578FAF137A39C57A7AC7A151968FBB9400EF9C5DA510B0F5312DCB7E4C1D5744C09A1300638A99B84A045285BB660AEDF646690523AAF79278D886F9A961A977017F4D24697F20BDE9FDE6ADDAF6AA7BC2086CC952782CA9B258E5E6E34C718E538D9141E71F22A51FBE523E3300CA0F54432741B2A544ED3130B24AF99A57EFF72E6B325E45BC9D0C2849628C31E54609E3D2021CA15804224895F7DDF3A17B0EAFD8B44ABDF7067628012AA0534E19A14C4E0B82F1C178476EC52C96E76F1A536BC6AF7AADAFE3F128D9FDB1A61EFA290DECCB8B6FCB558A1A2F00E0FB4FC210A27E697C6FC92F882198E580E189AD9E6E7F82B272A7DE7C92B84164FCBF4A723219E9FF8067988E9BB5F02A42D76D98A41FD4D4BA5F9592665C067B9487A3CF79A3E5FC8288D3F4F354379EFA3339CF75CBBD30FAAF02678A066F27D99A91D25E4550D47E3BD7C778A88A1AB54BE2C9766E3A7F4D03D245B7F3288C341FFF86966951462325F0E02854299C69E39353C9B9FC4D5530D9DBFA85DED53C63A307F01BF938E9FA4C5CB4DC4800EC22998C42DA52BAEFC7B4011535B0C9786B643B790891388A103F8DD946FE3C77D111EEC24DB7A7BE482EF98B94BECBCAE3A9BB1AB73F1F7CA40EA150A485044C1D0825781AB43C9EFB4F37DE6A53EFB4DAC3A2E749197660F919545BA2A0AD4F8A916F740B839502E89C9CEDF82145ADC8FD7CBA7FF7036041CF98BDA5AFE8179A1D00329E42B0E9B95436E6262DC6C48038426617851FCE2C8AF64F6D4AB5985F126AA5943E6160FE8B11A13C0AABCD7C988C22DC054DB0F4147692D87E76508706808A4CF461082DD2B544EE033617B589753F1708B7887F52450B7F8C4BFF4F4F35E9235F9E7342EF3DC970B32ED22482E28FCE5E173A24783639F9CB2F35524E2B634DAEAE1229458E2DAE20AC22B06A6F482B8003DBD1004E3DA21DC61A1272D070847806E4DA4F860CB933B93B0700A84D838C58ADE87BCCB59552A6A366FD2597236C4172BD10B432301D2D98EBCCBB0F2D1BA36B69402F5CD8AC2F43B87D3C9D0487D42401CF61171E905A3802D1FB3B2238C428C8367C7712FA88D62336F12D4058F302748A5F809B106FD2DBCC632624CBF57E3B43439ACBF342E33F714631E8F609D096001C93127F07936D9A454F7239DB93D0726EC99886D3B997A6872F27AD2263CD005F2C75D7CBFEACEAC5C0E757A5A90D085A5F385C0C50059E6450CAFEF38759B1BB0B192B00E2AE56DCCAC39ADFBA9352F9C6878717DB8F38F49CED3C79DE79E5E15D0F8C208F68D3F97D3629EF21A89B5B6B4F8D33AC9C26A65DE911FA90BBDADD5373297C7E25FFA9E387A6E61EA6C765234C451CD9B0A14AF8ECC370F29B2A9F68710776AFD58AE82C1DAD786D185B11381E3460D692F9EFA43C17957468F36F5DBA2F3A5838691CFF77920BC31D591010820C2C82AF3E18FF95B84BC443B5BD6A123A473F7E07E0C45259AA36ECF0FBD4B59100C4AFC78AAF5B33595780DE342771F5898CD37E086CEEDAD669154AF15D441811074A909D1B5EECB288D9C7941439F5F9219169E2B060F92B67553ED12BE70DDB8892B110002B5A5E9AB4FB494C5531FF8E196C9D610065DB2B8207A35976A62BE3D77AC5C14E14654ACC3CC386D4BF6B86986A3B9E9D58135BD74DEA0FC5BB2D0631ED6BA473D2338F30D1A185A2F3C2614F2FFC2AC092610231E0EA7BC966951A1D6F52C5F98AE1B47DC65C030F4FD3E2A7A28B0E472A31BD6A1DC02F7C68ECC450FAF812CCB4A434176C4BCF9A1EF201AB0D6CAB3EDBE8C035790CE8B9CB4AB314D822ED1E3EE8AAF4543F54E3E707096295A1D9C35EBB0FC01F2E2AC32678A681EE0DB03FE4108624176CC774DCE7951427DB4EAD16155BA211FE37D92D5DC42EF916CE910F6A571AC9DBD6FC042805B6B48BD010C13ADD7BB16238940F58E1988051DC07DBFF2AC7E77774945E3597FA4B283897D33EF90EBD346B1CBC7ED74D52AA5385227D094432CE29728D4FF8777F7E3CB92FB34FB1C84821673A87B381BC913B88ABD46C496B3475DB3932F1A8E8D842BEC2BAC77A96A82C5F9E46278F3A1099684CDC1B9AC0B2953EB1769273C916CAD4B7FC38F1B85D5DD6AEDDD8AA421DE9DE24B8E933118DE2F731F1D4EDA426D6A6E4A316A3FE53C0097BBDBE300C7A415D7D29200E86B55F54C94F09F75DC8B9B7CBA820139F668A3745E406AAE4B9F768E0D8C488BA40E1DA49C319798E8C3949946149DCD3EDFCC2D836C2026F58DFE2F609906475F4F882C31DE8FD800397CDA42C2A27CBE0F87044AD7AB09A5F9DB34C6FC88DF4D82B77F3B68628EE77733B2229B3A2D7DF0F1263FC54FC43504B2481CAD8F312515F5F63C8B38CC7DEB6BEA000A3296C75B6B229720258341F790E625B60E98F52E10038C65AB26398EC2E4CB5AD6F0396BEB425B5911C2540FEAC0E49F67938935829C6EABE837225CED2D7C640668CEDC90AE23BF9A7887B1FAA17A071F35606D3295AB5744FBE4E4B9E4D6ED56E8CCF6C68F232AC4AC0812519B0F76C4945F99376B6B5E5076BD96EC10875A62F7F5CE591D84B147712E82C96D83796E379624D3ABD73271F8D3E165B5E80DA07E23A15A6CF20C2D23DBAFC417288D1D57DF2CB0CC95C501A4462ADDCA525010093AEC945F1506C26A4C01524CFA7DD1DD84222A8ED99933CF51BA39273DB9DFE83EB8DA1C41D734B791AEDCD166FEAF9BAFB3B250426916703FC91583080E3C60F1E5067DEEEA40EB63742439FA7BA12B95320F8E25A97CF8E1ED80AF0124253EBBD121260FA16E432F27C154C6372AA80814A00072019002C222A99D3B34A3DCB8E7268027AF4269AC10D0C7CE1037C138C68C0F43673D9B2153DD1301946D773ACF288EF5CC04BDA1E85A6E7010BF00E9061D38879A2CDCBE1769578795C6351F1A38CD2845FDFFF65E4AEA7D11601053591D61C0974AC4EA57DBE8F83778A3555BA452DEA85C16645ECDC29C54EA66D1885EA290F59E3EBC7DCE93EF26413ABE55AACD80E85EB598F57D13F6C87C89835D1DFA19CFC186FA704089CD005D828AE9B189A4E0FECFB988E89EEA5A2F648501E372F5FE344B00190C4FDEA67551BD87F1E6C9E0AF506ECE747438FB4EDD20E516C542A2C26689EFCF314AAC0587C26E004EFF4EBDDC67304CEDB278E25DFC113B747F1E6907CDABDB24E986DD03543AADAE66E388E8631843ED39E71C5D187C665A16D1159D66DDC36F2E693A22476C20C1745D20D3E0EC67FB3E8A20E62C5E3BEB580E8569B3B15ED1D89C7DFDE6A84C6CC8C9F2B77268D1D43A2AB71B37EDE53F9E45450111531108768A65875B0C4E27EB187B818BD67DA1DD32EBEB015548581AC30D1A99E273A4AF9B1D28D19453E59F498D7D037603871104F0933006E20E8B5FC9DFF823A9E7FB301DA6E12906765CA28A361016AF993D688D07377F3E795CC3EFAE439342E3FC050F058EE4461563C19C0467ED02626DE4558D3E96CFA1EF8261DEA03F53883B8EDE2BB9BD1BA922D1E1520F536783FBDB878D2F7494C7838ED199C355C6445E6ABA376B831BC4ABC6E5C5F2A9FD94DD5C43E58142F02F03248300C80DB07DDEB9D28C1F04F2EE710D5412723E5585A8516AB38BEBDC102F39368569786DE80B476B1C252EA7AB8076411929821BCCD35EB76A9E33F940BBC4863773917298066B4A9F589CF956E26F793CC559546BE664A3C6571D2AA48BC45162358B77000201A93303D2CF8873BBB70A0DF8D613DA79536585E6112EEE9DB8B3184A8961083987F4261671B0D667F025F6D49BFB55C1453539A9D224EA47EA53A3A13547E0AC2EE203471E20000E524D49FFBDF405AA936631DCB6FEDEECF1588E00C543C906EA5264DA32940B3C82789484DBCC553299582EFD23EF789E07133D1FD2DB167473941EB0B50651274A52007A62AAB7DDF80F0E9354ECE1916432D4D39660876D065EDFE3302BB16D662610A2CB622294A4529ACB7FD4A7E06E014738DA09F1871D5A0D1FF7DC55068940A2C0BE8EAFBA6D65CE87ABEC0D947BD063157C873E20AA717D459CA00AF8BBC11ED60A5F9E1E45EC0418E0198445140359FC25B7FD62CBB330A872237B9AD5C29026B731CC4CABE2785810DDE6F50A53C9874F7F0E1BDE6582E8CB9A50237429B1585DF40B31E4C9598DB67A39AC4107D8631309FD02160DDBFFF6C1030C993CD0866F2ABF3E330C4D51921B9CE46C34F816FE39EF4FE53D99FC6F49F06EAE116010CE113C947865015E13E3761C0F578BC52938A8FAAF056A485124CF0F8F14717A85963D9D862C3F06EF2645985021B67287C6A51596804128D78B804CFEF9DE5241C540087B196B7953A6AB1712F8058E62BEC87A68A3B7E938821994F4292EB604C38F2CF13DE629EC4192A0325DBF9BC64279CDAB99659A800D42E3DBD00A4AA4A13B5C56BCE2CF8C7B6EE755E6A0AAF58E38234092DFD2A94E66843E4F9BA4B265BD5F60D2C447C12A3A9F4B55F88031870DC2E50A596E0061FC12102CD452668F14A48CED7F8933ACAB50D8BE2A2AD7FED5D64A64C15B2CED85047200958729866268E39D2C2145A2A7DDA46E059122F31359D3D0107A989B2B597C37AF127FD1434A58F6D96667EC5E5FEB0CDA0358F4316D134E98E8B17683D1A58D25CF43C9AAB2DB09CA60F237383B9997052CF04E378834D2F02C382D126CB341356B9B3FF673ECFA9C8F8093840B1063C10D6D9B2B920166A96A827B5D6B462C7EEDE11DAE5229B0E3D5F997912A39FF594749A99C24961FFBE208FEA0FC7495BD298387381E9E850FE2E2899E367E9F2BC5A335D79209AF8828DC91CA548D33A6F139D4C3E54079D6DAC13D045ED2738908F0F0B789BA8B6601C0C8C41638158EE7A5D5B2D0397CA9771FB8C559FB5D9673B6635586B6D06AE86C769A5A2EB69CD01059BF3323E99B9ECD88BA9E35146164AE29480186939033F87E6DB4DE3CAB1AF1A7B0A9AE4081CC025A1E48D2C123A7809B71B78DD7E124BA28D3AB56F769487047DC3130F03A851CCB4B3C030ABA13E96C4827AAA4107A5097973C6C2E1D33E8F65DDC2DC33291243BBEB398169814C0AF621E5C8B1E881EF9913AC4E8DE383067D351A5F2C0D1B5BE52768F92FF3186A625D0A57880A4955F173AECC29555DE334F1CB6297F2F4B15E134B38DE930CD7BFE611C20AB5B769D4ABD20A2ADD01903EFA4E11EB93668307E02D4B541DEAFB34A96619CAEE4A3668E0625A2DCED4003B599FA372358E02377EB99F5C81D920AAE176D1C5DB61F7171FF2EFF4D3B1A297F87932C756BBEA9FE45CEC8351D379F517CEADCFD2699A3283783C6EA055C3050C22D3CE163A7044380B31C7917D8EB6FACE89A51E0049E0F201908381379CEF1A7F774D857A6065A7A8B3BD09059EC3E143FB7D4F17026CC3E40EC15D68E719549349BFC3749A43015286A3955E52D98FB935BD323C41947BA8C424CDB661F7D6E741E5B5442C02D542E9BB6EBA6839363C354B1A0E9FC127EEFC00CFC0E7165535506C50213B395362A1C8DA977B524F128E410528034B4E021342FA710F8DCBDA667730981C547CAE179B841E186EA256FC197B67B4B52D8B2FD2BA1245847F0FD15F2E2D1C059308729732A4758D3E9451189D78FEF141F5CD243384B75C0C863FB98CB5FED0E62472CDD35D5727852E20C5ACEB93B6EDE6A8B2784C3D9D17864CC55E894C646A576C615F4AE0282433F0B6083D8A37BBCA9D29DB6DFDE828E8B1A973F211190759C0CC43F8E5EE9110859E8D7A5E8CCC4E2A1D1355975F8BE2FD822D3D3DC0597992331E96DD03D705D0B17630275A38718D85786F981691E3267B588DA59CB3D5052350807ED40ED92DDF638279A5D080F14914D1632F0B3A2AE8C953CCF3208BB20AC15A2E34066854DA95938A4D8F7C25F5A925FB99FFDABB98513E5809186E264900EA50F6549F93D930D298E44D3BD019A6EA869D74B4807A4D01CACF171DDDC00BBA147DB755C883BAAB9541ADE001835A60913DFD480788CE8AC665944D564E8A567AE9570933991AC4BA5E8CBBA75EB94931F6ECA499E7E6E6D608896E888A56EA2B13BAA766BB8133693EA2BD977F186B891F951C7C1C79B3CF6C83B9895C504F210A19A2EF8EAD61978058CD287F35982784B4BD0B451B3E0D89CA6B48D5C34E0AF2D8F345C579163CAE245921AFF767BC9B1ECDDAAD12BA361DA6BD7C363080A305C1FAEA58119BE3F1D6EC25AA9A85ACF1AC150102793188B93452EA32AAB12C7D016C5381419122EBCA3DEAF19CABFCC86CBEEC95623B71A211F7945D0903E8CF1A6CC15B34FE2AF96B05FAAACE7CA40049CE35620DC523AFF4A2B98ADC020E69C44AC0F8D382A54ABBFA6E20C8C5C3D4DE8554E50A656E6473747265616D0A656E646F626A0A787265660A302032360A303030303030303030302036353533352066200A30303030303030303135203030303030206E200A30303030303030333730203030303030206E200A30303030303030343635203030303030206E200A30303030303030363037203030303030206E200A30303030303030363436203030303030206E200A30303030303030373038203030303030206E200A30303030303031303637203030303030206E200A30303030303033393736203030303030206E200A30303030303139303631203030303030206E200A30303030303937373433203030303030206E200A30303030303937373837203030303030206E200A30303030303937383331203030303030206E200A30303030303938303232203030303030206E200A30303030303939323135203030303030206E200A30303030303939333938203030303030206E200A30303030313030353835203030303030206E200A30303030313030373831203030303030206E200A30303030313031393739203030303030206E200A30303030313032313537203030303030206E200A30303030313033333430203030303030206E200A30303030313033353237203030303030206E200A30303030313034373133203030303030206E200A30303030313034393030203030303030206E200A30303030313036303836203030303030206E200A30303030313036343437203030303030206E200A747261696C65720A3C3C0A2F49445B3C45344232383330333746393039423439413341413535443630433332333137313E3C45344232383330333746393039423439413341413535443630433332333137313E5D0A2F496E666F2031203020520A2F526F6F742032203020520A2F456E63727970742033203020520A2F53697A652032360A3E3E0A7374617274787265660A3130383532360A2525454F460A"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "StatementNotFoundRsExample": {
+                    "value": {
+                      "code": "STATEMENT_NOT_FOUND",
+                      "message": "Estado de cuenta no disponible"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/Method-Not-Allowed"
+          },
+          "422": {
+            "description": "Error de procesamiento",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "ProcessingErrorRsExample": {
+                    "value": {
+                      "code": "PROCESSING_ERROR",
+                      "message": "Error de procesamiento."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "operationId": "statement-pdf-http",
+        "description": "Genera el estado de cuenta en formato pdf de para los distintos tipos de productos",
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Channel"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "accountType": {
+                    "$ref": "../Models/Products/AccountTypeCode.yaml"
+                  },
+                  "accountNumber": {
+                    "type": "string",
+                    "description": "Nuero de cuenta de producto (idCard para tarjeta de credito)",
+                    "maxLength": 30,
+                    "minLength": 5,
+                    "example": "3645770022"
+                  },
+                  "month": {
+                    "$ref": "../Models/Products/MonthStatement.v1.yaml"
+                  },
+                  "year": {
+                    "$ref": "../Models/Products/YearStatement.v1.yaml"
+                  }
+                }
+              },
+              "examples": {
+                "CheckingAccountStatementRsExample": {
+                  "value": {
+                    "accountType": 3,
+                    "accountNumber": "0100473629",
+                    "month": 1,
+                    "year": 2021
+                  }
+                },
+                "SavingAccountStatementRsExample": {
+                  "value": {
+                    "accountType": 4,
+                    "accountNumber": "3645770022",
+                    "month": 1,
+                    "year": 2021
+                  }
+                },
+                "CreditCardStatementRsExample": {
+                  "value": {
+                    "accountType": 20,
+                    "accountNumber": "64736",
+                    "month": 1,
+                    "year": 2021
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "parameters": []
+    },
+    "/composition/ratePxr": {
+      "parameters": [],
+      "put": {
+        "summary": "Tasas de interés PXR",
+        "tags": [
+          "Tasas"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "properties": {
+                                "rating": {
+                                  "$ref": "../Models/Cobis/Rating.v1.yaml"
+                                },
+                                "segment": {
+                                  "$ref": "../Models/Customer/Segment.v1.yaml"
+                                },
+                                "subsegment": {
+                                  "$ref": "../Models/Customer/SubSegment.v1.yaml"
+                                },
+                                "currency": {
+                                  "$ref": "../Models/Products/Currency.v1.yaml"
+                                },
+                                "rate": {
+                                  "$ref": "../Models/Loans/InterestRate.v1.yaml"
+                                }
+                              },
+                              "required": [
+                                "rating",
+                                "segment",
+                                "subsegment",
+                                "currency",
+                                "rate"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "DetailRateRsExample": {
+                    "value": {
+                      "code": "OPERATION_SUCCESSFUL",
+                      "message": "Operación exitosa",
+                      "data": {
+                        "result": {
+                          "rating": "G1",
+                          "segment": {
+                            "code": "1",
+                            "description": "PERSONAS"
+                          },
+                          "subsegment": {
+                            "code": "1",
+                            "description": "ESTANDAR"
+                          },
+                          "currency": {
+                            "code": 0,
+                            "description": "QUETZAL"
+                          },
+                          "rate": 9.5
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "UnauthorizedRsExample": {
+                    "value": {
+                      "code": "UNAUTHORIZED",
+                      "message": "No autorizado"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "RateNotFoundRsExample": {
+                    "value": {
+                      "code": "RATE_NOT_FOUND",
+                      "message": "Tasa no encontrada"
+                    }
+                  },
+                  "CustomerNotFoundRsExample": {
+                    "value": {
+                      "code": "CUSTOMER_NOT_FOUND",
+                      "message": "Cliente no encontrado"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/components/responses/Method-Not-Allowed"
+          },
+          "422": {
+            "description": "Error de procesamiento",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "InvalidTermRsExample": {
+                    "value": {
+                      "code": "INVALID_TERMS",
+                      "message": "PLazo no habilitado"
+                    }
+                  },
+                  "InvalidAmountRsExample": {
+                    "value": {
+                      "code": "INVALID_AMOUNT",
+                      "message": "Monto no habilitado"
+                    }
+                  },
+                  "InvalidProductRsExample": {
+                    "value": {
+                      "code": "INVALID_PRODUCT",
+                      "message": "Producto no habilitado"
+                    }
+                  },
+                  "InvalidProductClassRsExample": {
+                    "value": {
+                      "code": "INVALID_PRODUCTCLASS",
+                      "message": "Sub Producto no habiliado"
+                    }
+                  },
+                  "InvalidFlowRsExample": {
+                    "value": {
+                      "code": "INVALID_FLOW",
+                      "message": "Flujo no habilitado"
+                    }
+                  },
+                  "InvalidCurrencyRsExample": {
+                    "value": {
+                      "code": "INVALID_CURRENCY",
+                      "message": "Moneda no habilitada"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "operationId": "pxr-rate-http",
+        "description": "Servicio para la consulta de tasas de interes según estrategia precio basado en riesgo",
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Authorization"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Channel"
+          },
+          {
+            "$ref": "#/components/parameters/branch"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idCobis": {
+                    "$ref": "../Models/Customer/idCobis.v1.yaml"
+                  },
+                  "sesionRate": {
+                    "$ref": "../Models/FinancialServices/uuid.v1.yaml"
+                  },
+                  "productType": {
+                    "$ref": "../Models/Products/ProductTypeCode.v1.yaml"
+                  },
+                  "productClass": {
+                    "$ref": "../Models/FinancialServices/ProductClassCode.v1.yaml"
+                  },
+                  "operationType": {
+                    "$ref": "../Models/Products/OperationType.v1.yaml"
+                  },
+                  "flow": {
+                    "$ref": "../Models/Products/FlowRate.v1.yaml"
+                  },
+                  "rating": {
+                    "$ref": "../Models/Cobis/Rating.v1.yaml"
+                  },
+                  "rate": {
+                    "type": "object",
+                    "required": [
+                      "amount",
+                      "terms",
+                      "currencyCode"
+                    ],
+                    "properties": {
+                      "amount": {
+                        "$ref": "../Models/Products/Amount.v1.yaml"
+                      },
+                      "terms": {
+                        "$ref": "../Models/Products/TermMonths.v1.yaml"
+                      },
+                      "currencyCode": {
+                        "$ref": "../Models/Products/CurrencyCode.yaml"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "sesionRate",
+                  "productType",
+                  "productClass",
+                  "operationType",
+                  "flow",
+                  "rate"
+                ]
+              },
+              "examples": {
+                "GetRateRqExample": {
+                  "value": {
+                    "idCobis": 205018,
+                    "sesionRate": "936bae7c-bfec-11eb-8529-0242ac130003",
+                    "productType": 20,
+                    "productClass": "PCRFA",
+                    "operationType": "C",
+                    "flow": "DEFAU",
+                    "rate": {
+                      "amount": 200000,
+                      "terms": 12,
+                      "currencyCode": 0
+                    }
+                  }
+                },
+                "GetRateRqExampleQuota": {
+                  "value": {
+                    "idCobis": 205018,
+                    "sesionRate": "936bae7c-bfec-11eb-8529-0242ac130003",
+                    "productType": 20,
+                    "productClass": "PCRFA",
+                    "operationType": "C",
+                    "flow": "DEFAU",
+                    "rate": {
+                      "amount": 200000,
+                      "terms": 12,
+                      "currencyCode": 0
+                    }
+                  }
+                },
+                "GetRateRatingRqExample": {
+                  "value": {
+                    "idCobis": 1,
+                    "sesionRate": "936bae7c-bfec-11eb-8529-0242ac130003",
+                    "productType": 20,
+                    "productClass": "S",
+                    "operationType": "C",
+                    "flow": "DEFAU",
+                    "rating": "G1",
+                    "rate": {
+                      "amount": 200000,
+                      "terms": 12,
+                      "currencyCode": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "description": "Paso de parametros para busqueda de tasa de interes"
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/composition/origination/eventLog": {
+      "post": {
+        "summary": "Registro de bitácora de Originación digital",
+        "operationId": "post-origination-log-http",
+        "responses": {
+          "200": {
+            "description": "Ejecución Exitosa ",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    }
+                  ]
+                },
+                "examples": {
+                  "OriginationLogRsExample": {
+                    "value": {
+                      "code": "OPERATION_SUCCESSFUL",
+                      "message": "Operación exitosa",
+                      "data": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "UNPROCESSABLE_ENTITY",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "UnprocessableEntityRsExample": {
+                    "value": {
+                      "code": "UNPROCESSABLE_ENTITY",
+                      "message": "Error en datos enviados en la solicitud",
+                      "errors": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "description": "Registro de operaciones proceso de originación digital ",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Channel"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "requestId": {
+                    "$ref": "../Models/Origination/RequestId.v1.yaml"
+                  },
+                  "requestStatus": {
+                    "$ref": "../Models/Origination/RequestStatus.v1.yaml"
+                  },
+                  "customerIdentification": {
+                    "type": "object",
+                    "required": [
+                      "identificationNumber",
+                      "identificationType"
+                    ],
+                    "properties": {
+                      "identificationNumber": {
+                        "$ref": "../Models/Customer/IdentificationNumber.v1.yaml"
+                      },
+                      "identificationType": {
+                        "$ref": "../Models/Customer/IdentificationType.v1.yaml"
+                      }
+                    }
+                  },
+                  "transactionDatetime": {
+                    "$ref": "../Models/Transactions/TransactionDatetime.v1.yaml"
+                  },
+                  "metadata": {
+                    "$ref": "../Models/Origination/DynamicData.v1.yaml"
+                  }
+                },
+                "required": [
+                  "requestId",
+                  "requestStatus",
+                  "customerIdentification",
+                  "transactionDatetime",
+                  "metadata"
+                ]
+              },
+              "examples": {
+                "Datos básicos": {
+                  "value": {
+                    "requestId": "936bae7c-bfec-11eb-8529-0242ac130003",
+                    "requestStatus": "APROBADO",
+                    "customerIdentification": {
+                      "identificationNumber": "1234567890123",
+                      "identificationType": "DPI"
+                    },
+                    "transactionDatetime": "2021-01-15T13:57:29.688Z",
+                    "metadata": "{\"customer\": {},\"tc\": {},\"cf\": {}, \"biometric\": {}}"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Paso de parametros para la generación y trazabilidad de la bitacora"
+        },
+        "tags": [
+          "Originacion"
+        ]
+      },
+      "parameters": [],
+      "get": {
+        "summary": "Consulta de Bitácora de Originación Digital",
+        "operationId": "get-origination-log-http",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "result"
+                          ],
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "required": [
+                                "requestId",
+                                "requestStatus",
+                                "customerIdentification",
+                                "transactionDateTime",
+                                "metadata"
+                              ],
+                              "properties": {
+                                "requestId": {
+                                  "$ref": "../Models/Origination/RequestId.v1.yaml"
+                                },
+                                "requestStatus": {
+                                  "$ref": "../Models/Origination/RequestStatus.v1.yaml"
+                                },
+                                "customerIdentification": {
+                                  "type": "object",
+                                  "minProperties": 2,
+                                  "required": [
+                                    "identificationNumber",
+                                    "identificationType"
+                                  ],
+                                  "properties": {
+                                    "identificationNumber": {
+                                      "$ref": "../Models/Customer/IdentificationNumber.v1.yaml"
+                                    },
+                                    "identificationType": {
+                                      "$ref": "../Models/Customer/IdentificationType.v1.yaml"
+                                    }
+                                  }
+                                },
+                                "transactionDateTime": {
+                                  "$ref": "../Models/Transactions/TransactionDatetime.v1.yaml"
+                                },
+                                "metadata": {
+                                  "$ref": "../Models/Origination/DynamicData.v1.yaml"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                },
+                "examples": {
+                  "Respuesta datos básicos": {
+                    "value": {
+                      "code": "OPERATION_SUCCESSFUL",
+                      "message": "Operación exitosa",
+                      "data": {
+                        "result": {
+                          "requestId": "936bae7c-bfec-11eb-8529-0242ac130003",
+                          "requestStatus": "APROBADO",
+                          "customerIdentification": {
+                            "identificationNumber": "1234567890123",
+                            "identificationType": "DPI"
+                          },
+                          "transactionDateTime": "2021-01-15T13:57:29.688Z",
+                          "metadata": "{\"customer\": {},\"tc\": {},\"cf\": {}, \"biometric\": {}}"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "SalesLogRsBadRequest": {
+                    "value": {
+                      "code": "BAD_REQUEST",
+                      "message": "Internal error"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../Models/Base-Error.v1.json"
+                },
+                "examples": {
+                  "CustomerNotFoundRsExample": {
+                    "value": {
+                      "code": "CUSTOMER_NOT_FOUND",
+                      "message": "Cliente no encontrado"
+                    }
+                  },
+                  "StepNotFoundRsExample": {
+                    "value": {
+                      "code": "STEP_NOT_FOUND",
+                      "message": "Paso relacionado a oferta no existe"
+                    }
+                  },
+                  "PersonNotFoundRsExample": {
+                    "value": {
+                      "code": "PERSON_NOT_FOUND",
+                      "message": "Persona no encontrada"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "description": "Consulta de operaciones registradas del proceso de originación digital",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Channel"
+          },
+          {
+            "$ref": "#/components/parameters/requestId"
+          },
+          {
+            "$ref": "#/components/parameters/identificationNumber"
+          },
+          {
+            "$ref": "#/components/parameters/identificationType"
+          }
+        ],
+        "tags": [
+          "Originacion"
+        ]
+      }
+    },
+    "/composition/active/correlative": {
+      "put": {
+        "summary": "Generación automatica correlativos actas y resoluciones",
+        "tags": [
+          "Financiamiento"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "../Models/Base-Response.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "result": {
+                              "type": "object",
+                              "properties": {
+                                "actCorrelative": {
+                                  "$ref": "../Models/Products/Act.v1.yaml"
+                                },
+                                "resolutionCorrelative": {
+                                  "$ref": "../Models/Loans/resolution.v1.yaml"
+                                }
+                              },
+                              "required": [
+                                "actCorrelative",
+                                "resolutionCorrelative"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "GenerateCorrelativesRsExample": {
+                    "value": {
+                      "code": "OPERATION_SUCCESSFUL",
+                      "message": "Operación exitosa",
+                      "data": {
+                        "result": {
+                          "actCorrelative": "ACTA NO. 230 -NIVEL VI -2022",
+                          "resolutionCorrelative": "C01CG-ENE07-2018GDBP"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
+          }
+        },
+        "operationId": "generate-correlative-active-http",
+        "description": "Generacion de correlativos actas y resoluciones\npara productos activos cartera y tarjeta de credito\n\nprocesos implementados\ncartera / credito facil\ntarjeta / nueva y modificaciones",
+        "security": [
+          {
+            "api_key": []
+          },
+          {
+            "AuthorizationChannels": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "./customers.v1.json#/components/parameters/Identifier"
+          },
+          {
+            "in": "header",
+            "name": "Channel",
+            "description": "Identificador Canal",
+            "schema": {
+              "type": "string",
+              "example": "SVP"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Variables para tipo de operación\n\nProducto Nuevo = N\nModificacion producto = M",
+                "properties": {
+                  "operationClass": {
+                    "$ref": "../Models/CreditCard/OperationType.v1.yaml"
+                  },
+                  "productType": {
+                    "type": "string",
+                    "enum": [
+                      "7",
+                      "20"
+                    ],
+                    "description": "7 Credito\n20 TC"
+                  },
+                  "productClass": {
+                    "type": "string",
+                    "enum": [
+                      "PCRFA"
+                    ],
+                    "description": "PCRFA credito facil soportado"
+                  }
+                },
+                "required": [
+                  "operationClass",
+                  "productType"
+                ]
+              },
+              "examples": {
+                "GenerateCorrelativesRqExampleCredit": {
+                  "value": {
+                    "operationClass": "N",
+                    "productType": "7",
+                    "productClass": "PCRFA"
+                  }
+                },
+                "GenerateCorrelativesRqExampleTcNew": {
+                  "value": {
+                    "operationClass": "N",
+                    "productType": "20"
+                  }
+                },
+                "GenerateCorrelativesRqExampleTcModify": {
+                  "value": {
+                    "operationClass": "M",
+                    "productType": "20"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Paso de parametros para solicitar correlativos"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "api_key": {
+        "name": "x-api-key",
+        "type": "apiKey",
+        "in": "header",
+        "description": "API Key asignado para otorgar accesos a los distintos endpoints del API"
+      },
+      "AuthorizationChannels": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Authentique los requests incluyendo el [Bearer Token](../docs/authentication.md) en el `Authorization` request header.\n\nEj:\n\n```http\nGET /accounts\nhost: api.bam.com.gt\nAccept: application/json\nAuthorization: {{ACCESS_TOKEN}}\n```"
+      }
+    },
+    "responses": {
+      "Uncontroller-Error": {
+        "description": "Uncontroller error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "uncontrollerErrorRsExample": {
+                "value": {
+                  "code": "UNCONTROLLER_ERROR",
+                  "message": "Mensaje generico según la excepcion"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Method-Not-Allowed": {
+        "description": "Metodo no permitido",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "MethodNotAllowedRsExample": {
+                "value": {
+                  "code": "METHOD_NOT_ALLOWED",
+                  "message": "Servicio no autorizado."
+                }
+              }
+            }
+          }
+        }
+      },
+      "Service-Unavailable": {
+        "description": "Servicio no disponible  ",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "ServicesUnavailableRsExample": {
+                "value": {
+                  "code": "SERVICE_UNAVAILABLE",
+                  "message": "Servicio no disponible"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "idCobis": {
+        "name": "idCobis",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "number",
+          "example": 2015812
+        },
+        "description": "Secuencial que identifica a cliente "
+      },
+      "identificationNumber": {
+        "name": "identificationNumber",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "example": "2280301880115",
+          "minLength": 1
+        },
+        "description": "Número de identificación de persona"
+      },
+      "branch": {
+        "name": "Branch",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "int32",
+          "example": "1"
+        },
+        "description": "Identificador numérico que indica la agencia que consume el servicio"
+      },
+      "reason": {
+        "name": "Reason",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "int32",
+          "example": "1",
+          "default": "1"
+        },
+        "description": "Identificador numérico que indica el motivo de la transacción"
+      },
+      "channel": {
+        "name": "Channel",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "example": 1
+        },
+        "description": "Identificador numérico que identifica el canal que efectúo la operación"
+      },
+      "identificationType": {
+        "name": "identificationType",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Tipo de documento de identificación"
+      },
+      "requestId": {
+        "name": "requestId",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Id de solicitud"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Estado de cuenta"
+    },
+    {
+      "name": "Financiamiento"
+    },
+    {
+      "name": "Tasas"
+    },
+    {
+      "name": "Ventas"
+    }
+  ]
+}

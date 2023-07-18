@@ -42,13 +42,59 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "./baseResponse.v1.json"
+                  "allOf": [
+                    {
+                      "$ref": "./baseResponse.v1.json"
+                    },
+                    {
+                      "type": "object",
+                      "x-stoplight": {
+                        "id": "72x9fa2v6jzzw"
+                      },
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "x-stoplight": {
+                            "id": "fmo2jscha8gic"
+                          },
+                          "properties": {
+                            "result": {
+                              "type": "array",
+                              "x-stoplight": {
+                                "id": "f7n75jqlyt6eu"
+                              },
+                              "items": {
+                                "x-stoplight": {
+                                  "id": "z0dlzyslnpaes"
+                                },
+                                "type": "object",
+                                "properties": {
+                                  "catalogCode": {
+                                    "type": "string",
+                                    "x-stoplight": {
+                                      "id": "hip889ayk88jw"
+                                    }
+                                  },
+                                  "code": {
+                                    "type": "string",
+                                    "x-stoplight": {
+                                      "id": "bw77urb8j9qnj"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
                 },
                 "examples": {
                   "Example 1": {
                     "value": {
-                      "message": "TRANSACTION_SUCCESS",
-                      "code": "200",
+                      "code": "OPERATION_SUCCESSFULL",
+                      "message": "Operación exitosa",
                       "data": {}
                     }
                   }
