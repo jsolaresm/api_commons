@@ -1,27 +1,37 @@
 {
   "openapi": "3.0.0",
-  "x-stoplight": {
-    "id": "puwu6zdf87ck9"
-  },
   "info": {
-    "title": "commons.v1",
+    "title": "commons",
     "version": "1.0",
-    "description": "Api para el manejo de data comun entre ecosistemas"
+    "contact": {
+      "name": "Javier Solares",
+      "email": "jsolares@tecniseguros.com"
+    },
+    "license": {
+      "name": "Tecniseguros/Mediprocesos"
+    },
+    "description": "API para la consulta, gestión y validación parametros bases de la organización",
+    "x-tags": {
+      "bam:application-id": "api_commons",
+      "bam:component": "servicios-core",
+      "bam:layer": "composicion",
+      "bam:tecnical-domain": "commons",
+      "bam:sox-compliance": "si",
+      "bam:billing-mode": "transversal",
+      "bam:cost-center": "0",
+      "bam:cost-center-project": "xxx",
+      "bam:impact": "BIA",
+      "bam:creator-user": "javier.solares - javier solares",
+      "bam:creator-email": "jsolares@tecniseguros.com"
+    }
   },
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "https://stage/serv/v1",
+      "description": "ComponentesCompartidosDev"
     }
   ],
   "paths": {
-    "/commons/catalog": {
-      "get": {
-        "summary": "Consulta listado de catalogos generales",
-        "tags": [],
-        "responses": {},
-        "operationId": "get-commons-catalog"
-      }
-    },
     "/commons/catalog/{catalogCode}/detail": {
       "parameters": [
         {
@@ -44,7 +54,7 @@
                 "schema": {
                   "allOf": [
                     {
-                      "$ref": "./baseResponse.v1.json"
+                      "$ref": "../Models/Base-Response.v1.json"
                     },
                     {
                       "type": "object",
@@ -58,31 +68,63 @@
                             "id": "fmo2jscha8gic"
                           },
                           "properties": {
-                            "result": {
-                              "type": "array",
+                            "record": {
+                              "type": "object",
                               "x-stoplight": {
                                 "id": "f7n75jqlyt6eu"
                               },
-                              "items": {
-                                "x-stoplight": {
-                                  "id": "z0dlzyslnpaes"
-                                },
-                                "type": "object",
-                                "properties": {
-                                  "catalogCode": {
-                                    "type": "string",
-                                    "x-stoplight": {
-                                      "id": "hip889ayk88jw"
-                                    }
+                              "properties": {
+                                "catalogCode": {
+                                  "x-stoplight": {
+                                    "id": "z0dlzyslnpaes"
                                   },
-                                  "code": {
-                                    "type": "string",
+                                  "type": "string"
+                                },
+                                "items": {
+                                  "type": "array",
+                                  "x-stoplight": {
+                                    "id": "6kh8hoebmpvf0"
+                                  },
+                                  "items": {
                                     "x-stoplight": {
-                                      "id": "bw77urb8j9qnj"
-                                    }
+                                      "id": "e1smdzzbjn8jn"
+                                    },
+                                    "type": "object"
+                                  }
+                                },
+                                "total": {
+                                  "type": "string",
+                                  "x-stoplight": {
+                                    "id": "pvfoo58yvap2v"
+                                  }
+                                },
+                                "count": {
+                                  "type": "string",
+                                  "x-stoplight": {
+                                    "id": "1sn0hboq0jif7"
+                                  }
+                                },
+                                "limit": {
+                                  "type": "string",
+                                  "x-stoplight": {
+                                    "id": "aks06rsigjhku"
+                                  }
+                                },
+                                "offset": {
+                                  "type": "string",
+                                  "x-stoplight": {
+                                    "id": "ne9j674e4va16"
                                   }
                                 }
-                              }
+                              },
+                              "required": [
+                                "catalogCode",
+                                "items",
+                                "total",
+                                "count",
+                                "limit",
+                                "offset"
+                              ]
                             }
                           }
                         }
@@ -91,16 +133,79 @@
                   ]
                 },
                 "examples": {
-                  "Example 1": {
+                  "centralAmericaRsExample": {
                     "value": {
-                      "code": "OPERATION_SUCCESSFULL",
+                      "code": "OPERATION_SUCCESSFUL",
                       "message": "Operación exitosa",
-                      "data": {}
+                      "data": {
+                        "record": {
+                          "catalogCode": "Country",
+                          "items": [
+                            {
+                              "code": "GTM",
+                              "description": "GUATEMALA",
+                              "active": true,
+                              "comment": "Centro america"
+                            },
+                            {
+                              "code": "SV",
+                              "description": "EL SALVADOR",
+                              "active": true,
+                              "comment": "Centro america"
+                            },
+                            {
+                              "code": "PA",
+                              "description": "PANAMA",
+                              "active": true,
+                              "comment": "Centro america"
+                            },
+                            {
+                              "code": "CR",
+                              "description": "COSTARICA",
+                              "active": true,
+                              "comment": "Centro america"
+                            },
+                            {
+                              "code": "HN",
+                              "description": "HONDURAS",
+                              "active": true,
+                              "comment": "Centro america"
+                            },
+                            {
+                              "code": "NI",
+                              "description": "NICARAGUA",
+                              "active": true,
+                              "comment": "Centro america"
+                            }
+                          ],
+                          "total": "6",
+                          "count": "6",
+                          "limit": "200",
+                          "offset": "0"
+                        }
+                      }
                     }
                   }
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/Uncontroller-Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Service-Unavailable"
           }
         },
         "operationId": "get-detail-catalog-http",
@@ -120,49 +225,302 @@
           {
             "$ref": "#/components/parameters/Channel"
           }
-        ]
+        ],
+        "requestBody": {
+          "content": {}
+        }
       }
     }
   },
   "components": {
     "schemas": {},
-    "securitySchemes": {
-      "AuthorizationChannels": {
-        "type": "http",
-        "scheme": "bearer"
-      },
-      "x-api-key": {
-        "name": "API Key",
-        "type": "apiKey",
-        "in": "header",
-        "description": ""
-      }
-    },
     "parameters": {
-      "Authorization": {
-        "name": "Authorization",
-        "in": "header",
-        "required": false,
-        "schema": {
-          "type": "string"
-        }
-      },
       "Identifier": {
         "name": "Identifier",
         "in": "header",
-        "required": false,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "67b37526-d7ab-48f1-98a6-ea940fc17e08"
+        },
+        "description": "Identificador unico que traza las peticiones desde los canales",
+        "required": true
+      },
+      "Authorization": {
+        "name": "Authorization",
+        "in": "header",
+        "required": true,
         "schema": {
           "type": "string"
-        }
+        },
+        "description": "Token de autorización proveído por el componente de seguridad de COBIS"
+      },
+      "Currency": {
+        "name": "currency",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "0",
+            "1",
+            "2"
+          ],
+          "example": "0"
+        },
+        "description": "Código de moneda."
       },
       "Channel": {
         "name": "Channel",
         "in": "header",
-        "required": false,
+        "required": true,
         "schema": {
           "type": "string"
+        },
+        "description": "Nombre que identifica el canal que efectúo la operación. https://dev.azure.com/BancoAgromercantilGT/Gerencia%20de%20Sistemas%20y%20Tecnolog%C3%ADa/_wiki/wikis/Gerencia-de-Sistemas-y-Tecnolog%C3%ADa.wiki/1579/Estrategia-de-canales"
+      },
+      "Rol": {
+        "name": "Rol",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "example": 54
+        },
+        "description": "Código de Rol de usuario con el que se identifica en el canal"
+      }
+    },
+    "securitySchemes": {
+      "api_key": {
+        "name": "x-api-key",
+        "type": "apiKey",
+        "in": "header",
+        "description": "API Key asignado para otorgar accesos a los distintos endpoints del API"
+      },
+      "AuthorizationChannels": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Authentique los requests incluyendo el [Bearer Token](../docs/authentication.md) en el `Authorization` request header.\n\nEj:\n\n```http\nGET /accounts\nhost: api.bam.com.gt\nAccept: application/json\nAuthorization: {{ACCESS_TOKEN}}\n```"
+      }
+    },
+    "responses": {
+      "Uncontroller-Error": {
+        "description": "Uncontroller error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "uncontrollerErrorRsExample": {
+                "value": {
+                  "code": "UNCONTROLLER_ERROR",
+                  "message": "Mensaje generico según la excepcion"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Method-Not-Allowed": {
+        "description": "Metodo no permitido",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "MethodNotAllowedRsExample": {
+                "value": {
+                  "code": "METHOD_NOT_ALLOWED",
+                  "message": "Servicio no autorizado."
+                }
+              }
+            }
+          }
+        }
+      },
+      "Service-Unavailable": {
+        "description": "Servicio no disponible  ",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "ServicesUnavailableRsExample": {
+                "value": {
+                  "code": "SERVICE_UNAVAILABLE",
+                  "message": "Servicio no disponible"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Uso no autorizado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "UnauthorizedRsExample": {
+                "value": {
+                  "code": "UNAUTHORIZED",
+                  "message": "Uso no autorizado"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Insufficient-Founds": {
+        "description": "Fondos insufficientes",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "InsuficientFoundsRsExample": {
+                "value": {
+                  "code": "INSUFFICIENT_FOUNDS",
+                  "message": "Fondos insuficientes"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Resource-Not-Found": {
+        "description": "Cliente, cuenta, funcionario, etc. no encontrado ",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "ResourceNotFoundRsExample": {
+                "value": {
+                  "code": "CUSTOMER_NOT_FOUND",
+                  "message": "Cliente no encontrado"
+                }
+              },
+              "AccountNotFoundRsExample": {
+                "value": {
+                  "code": "ACCOUNT_NOT_FOUND",
+                  "message": "Cuenta no encontrada"
+                }
+              },
+              "ClerkNotFoundRsExample": {
+                "value": {
+                  "code": "CLERCK_NOT_FOUND",
+                  "message": "Funcionario no encontrado"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Not-Acceptable": {
+        "description": "Mensaje el error de validación",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "NotAcceptableRsExample": {
+                "value": {
+                  "code": "NOT_ACCEPTABLE",
+                  "message": "Mensaje el error de validación"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Processing-Error": {
+        "description": "Error de procesamiento",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "ProccessingErrorRsExample": {
+                "value": {
+                  "code": "PROCESSING_ERROR",
+                  "message": "Mensaje según error de procesamiento"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Resource-Is-Locked": {
+        "description": "Cuenta bloqueada",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "AccountIsLockedRsExample": {
+                "value": {
+                  "code": "ACCOUNT_IS_LOCKED",
+                  "message": "La cuenta está bloqueada"
+                }
+              },
+              "AccountIsSeizedRsExample": {
+                "value": {
+                  "code": "ACCOUNT_IS_SEIZED",
+                  "message": "La cuenta está embargada"
+                }
+              },
+              "AccountIsNotActive": {
+                "value": {
+                  "code": "ACCOUNT_IS_NOT_ACTIVE",
+                  "message": "La cuenta no está activa"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Bad-Request": {
+        "description": "Example response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../Models/Base-Error.v1.json"
+            },
+            "examples": {
+              "BadRequestRsExample": {
+                "value": {
+                  "code": "BAD_REQUEST",
+                  "message": "Los datos requeridos no estan completos"
+                }
+              }
+            }
+          }
         }
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Consulta"
+    },
+    {
+      "name": "Contactabilidad"
+    },
+    {
+      "name": "Documentos"
+    },
+    {
+      "name": "Gestiones"
+    }
+  ]
 }
