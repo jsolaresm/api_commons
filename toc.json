@@ -13,8 +13,7 @@
     {
       "type": "item",
       "title": "Comunes",
-      "uri": "reference/commons.v1.json"
+      "uri": "reference/comunes.v1.json"
     }
-    
   ]
 }

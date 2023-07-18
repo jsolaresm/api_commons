@@ -1,5 +1,8 @@
 {
   "openapi": "3.0.0",
+  "x-stoplight": {
+    "id": "03d8dfe118512"
+  },
   "info": {
     "title": "commons",
     "version": "1.0",
@@ -32,7 +35,7 @@
     }
   ],
   "paths": {
-    "/commons/catalog/{catalogCode}/detail": {
+    "/comunes/catalog/{catalogCode}/detail": {
       "parameters": [
         {
           "schema": {
@@ -45,7 +48,9 @@
       ],
       "get": {
         "summary": "Lista detalle de catalogo",
-        "tags": [],
+        "tags": [
+          "catalogos"
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -217,6 +222,9 @@
         ],
         "requestBody": {
           "content": {}
+        },
+        "x-stoplight": {
+          "id": "92qkzgt4pgo4x"
         }
       }
     }
@@ -500,16 +508,7 @@
   },
   "tags": [
     {
-      "name": "Consulta"
-    },
-    {
-      "name": "Contactabilidad"
-    },
-    {
-      "name": "Documentos"
-    },
-    {
-      "name": "Gestiones"
+      "name": "catalogos"
     }
   ]
 }
