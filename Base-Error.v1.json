@@ -1,0 +1,77 @@
+{
+  "description": "Modelo base para response en caso de error.",
+  "x-stoplight": {
+    "id": "frif3d1vqsl25"
+  },
+  "type": "object",
+  "title": "",
+  "properties": {
+    "code": {
+      "type": "string",
+      "minLength": 1,
+      "example": "CTL500",
+      "pattern": "^[A-Z0-9]+",
+      "maxLength": 40,
+      "x-stoplight": {
+        "id": "sfrxoj5l27gwc"
+      }
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "example": "Internal error",
+      "x-stoplight": {
+        "id": "me1juyi6oh55p"
+      }
+    },
+    "errors": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "example": "CTL50001",
+            "x-stoplight": {
+              "id": "bh8ct74m5pxd2"
+            }
+          },
+          "param": {
+            "type": "string",
+            "minLength": 1,
+            "example": "name",
+            "x-stoplight": {
+              "id": "vbrsmw4xbvg5n"
+            }
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Catalog doesnt exists",
+            "x-stoplight": {
+              "id": "vkqkzb03q9io6"
+            }
+          }
+        },
+        "required": [
+          "code",
+          "param",
+          "message"
+        ],
+        "x-stoplight": {
+          "id": "0zy960atmoyov"
+        }
+      },
+      "x-stoplight": {
+        "id": "zn3ncofyg5m6c"
+      }
+    }
+  },
+  "required": [
+    "code",
+    "message"
+  ]
+}

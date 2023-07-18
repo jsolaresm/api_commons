@@ -1,0 +1,17 @@
+{
+  "title": "Res-Id-Referencia",
+  "x-stoplight": {
+    "id": "quxtnwzrmllgf"
+  },
+  "type": "object",
+  "description": "",
+  "properties": {
+    "idReference": {
+      "type": "string",
+      "description": "Número de referencia de la operación realizada",
+      "x-stoplight": {
+        "id": "7t3fhp6pnc7p6"
+      }
+    }
+  }
+}
