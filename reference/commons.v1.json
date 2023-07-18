@@ -190,17 +190,6 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                }
-              }
-            }
-          },
           "500": {
             "$ref": "#/components/responses/Uncontroller-Error"
           },
