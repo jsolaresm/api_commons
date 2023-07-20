@@ -16,14 +16,12 @@
     "description": "API para la consulta, gestión y validación parametros bases de la organización",
     "x-tags": {
       "bam:application-id": "api_commons",
-      "bam:component": "servicios-core",
       "bam:layer": "composicion",
       "bam:tecnical-domain": "commons",
       "bam:sox-compliance": "si",
       "bam:billing-mode": "transversal",
       "bam:cost-center": "0",
       "bam:cost-center-project": "xxx",
-      "bam:impact": "BIA",
       "bam:creator-user": "javier.solares - javier solares",
       "bam:creator-email": "jsolares@tecniseguros.com"
     }
@@ -53,7 +51,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
@@ -195,6 +193,25 @@
               }
             }
           },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "examples": {
+                  "CatalogDetailRsNotFound": {
+                    "value": {
+                      "code": "CATALOG_NOT_FOUND",
+                      "message": "Detalle de catalogo no encontrado"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "$ref": "#/components/responses/Uncontroller-Error"
           },
@@ -205,7 +222,7 @@
         "operationId": "get-detail-catalog-http",
         "security": [
           {
-            "AuthorizationChannels": []
+            "api_key": []
           }
         ],
         "description": "Consulta de detalle de catalogo por codigo",
